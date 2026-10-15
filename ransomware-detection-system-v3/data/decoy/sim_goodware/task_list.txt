@@ -1,0 +1,6 @@
+To-Do List
+----------
+[ ] Finish literature review
+[ ] Collect dataset
+[ ] Write methodology chapter
+[ ] Submit first draft

@@ -1,0 +1,4 @@
+New-hire checklist
+[x] ID badge
+[x] Laptop
+[ ] Security training

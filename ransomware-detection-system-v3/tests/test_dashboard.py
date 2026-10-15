@@ -1,0 +1,112 @@
+"""
+Tests for DashboardState (src/gui/dashboard_state.py) -- deliberately
+import nothing from dashboard.py itself, since that requires
+customtkinter, which needs the separate Python 3.14 GUI environment
+(see README.md's Step 6). DashboardState has no GUI framework
+dependency at all, so these tests run in the plain backend environment.
+"""
+
+from src.gui.dashboard_state import DashboardState
+
+
+def _detection(prediction=1, confidence=0.91, action="terminate", pid=42, **extra):
+    return {
+        "pid": pid,
+        "prediction": prediction,
+        "confidence": confidence,
+        "action": action,
+        "mode": "observe",
+        "features": {
+            "modification_frequency": 10,
+            "extension_change_rate": 2,
+            "file_access_breadth": 3,
+        },
+        **extra,
+    }
+
+
+def test_record_detection_updates_counters():
+    state = DashboardState()
+    state.record_detection(_detection(prediction=1, action="terminate"))
+
+    assert state.counters["total"] == 1
+    assert state.counters["ransomware"] == 1
+    assert state.counters["goodware"] == 0
+    assert state.counters["terminate"] == 1
+    assert state.counters["quarantine"] == 0
+
+
+def test_record_detection_tracks_goodware_and_continue():
+    state = DashboardState()
+    state.record_detection(_detection(prediction=0, action="continue"))
+
+    assert state.counters["goodware"] == 1
+    assert state.counters["ransomware"] == 0
+    assert state.counters["continue"] == 1
+
+
+def test_record_detection_updates_last_fields():
+    state = DashboardState()
+    state.record_detection(_detection(pid=99, prediction=1, confidence=0.75))
+
+    assert state.last_pid == 99
+    assert state.last_prediction == 1
+    assert state.last_confidence == 0.75
+    assert state.last_features["file_access_breadth"] == 3
+
+
+def test_record_detection_appends_to_history_and_logs():
+    state = DashboardState()
+    state.record_detection(_detection(pid=42, action="terminate"))
+
+    assert len(state.history) == 1
+    entry = state.history[0]
+    assert entry["pid"] == 42
+    assert entry["prediction"] == "RANSOMWARE"
+    assert entry["action"] == "TERMINATE"
+
+    assert len(state.logs) == 1
+    assert "PID=42" in state.logs[0]
+    assert "TERMINATE" in state.logs[0]
+
+
+def test_history_is_capped_at_history_limit():
+    state = DashboardState(history_limit=5)
+    for i in range(10):
+        state.record_detection(_detection(pid=i))
+
+    assert len(state.history) == 5
+    assert state.history[-1]["pid"] == 9
+
+
+def test_classifications_and_threats_properties():
+    state = DashboardState()
+    state.record_detection(_detection(prediction=1))
+    state.record_detection(_detection(prediction=0))
+    state.record_detection(_detection(prediction=1))
+
+    assert state.classifications == 3
+    assert state.threats == 2
+
+
+def test_average_reaction_ms():
+    state = DashboardState()
+    state.record_detection(_detection(reaction_time_ms=4.0))
+    state.record_detection(_detection(reaction_time_ms=6.0))
+
+    assert state.average_reaction_ms == 5.0
+
+
+def test_average_reaction_ms_is_zero_with_no_data():
+    state = DashboardState()
+    assert state.average_reaction_ms == 0.0
+
+
+def test_reset_counters():
+    state = DashboardState()
+    state.record_detection(_detection())
+    assert state.counters["total"] == 1
+
+    state.reset_counters()
+    assert all(v == 0 for v in state.counters.values())
+    assert len(state.history) == 1

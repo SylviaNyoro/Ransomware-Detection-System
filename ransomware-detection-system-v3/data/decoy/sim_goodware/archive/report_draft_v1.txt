@@ -1,0 +1,10 @@
+Project Report - Draft
+======================
+Section 1: Introduction
+This document describes the project scope and objectives.
+The work is expected to be completed by end of Q4 2026.
+
+Section 2: Methodology
+----------------------
+Data was collected from the enterprise environment over a 30-day period.
+All samples were labelled by a certified security analyst.

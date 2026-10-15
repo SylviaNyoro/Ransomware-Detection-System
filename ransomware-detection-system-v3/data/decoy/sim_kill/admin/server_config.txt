@@ -1,0 +1,3 @@
+Server: prod-01
+OS: Ubuntu 24.04
+Services: nginx, postgres

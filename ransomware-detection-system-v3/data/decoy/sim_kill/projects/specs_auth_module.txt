@@ -1,0 +1,3 @@
+Auth Module Specification
+OAuth2 + PKCE
+Token lifetime: 1h

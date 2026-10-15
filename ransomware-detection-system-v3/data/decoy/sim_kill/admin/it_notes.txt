@@ -1,0 +1,3 @@
+IT Notes
+- Patch servers by Friday
+- Rotate TLS certs in Nov

@@ -1,0 +1,29 @@
+# All dependencies — single environment, Python 3.14.7
+#
+# Previously split across requirements.txt (Python 3.12 backend) and
+# requirements-gui.txt (Python 3.14 GUI). Now unified into one file.
+#
+# Packages with >= bounds are those that needed version updates for
+# Python 3.14 compatibility (numpy 1.x, scikit-learn 1.5.x, and
+# imbalanced-learn 0.12.x do not ship Python 3.14 wheels).
+
+# Core ML / data
+scikit-learn>=1.6.0
+pandas>=2.2.0
+numpy>=2.0.0
+joblib>=1.4.0
+imbalanced-learn>=0.13.0
+
+# Real-time monitoring & process management
+watchdog>=5.0.0
+psutil>=6.0.0
+
+# Dashboard (previously requirements-gui.txt)
+customtkinter>=6.0.0
+
+# Config / utils
+pyyaml>=6.0.0
+
+# Dev / testing
+pytest>=8.0.0
+matplotlib>=3.10.0

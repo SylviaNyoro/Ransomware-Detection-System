@@ -1,0 +1,47 @@
+#!/bin/bash
+# Benign demo: edit documents across six folders and simulate
+# two ordinary document-extension changes.
+
+cd "$(dirname "$0")" || exit 1
+
+python3 - <<'PY'
+import os
+import time
+from pathlib import Path
+
+d = Path("data/decoy/work")
+folders = "abcdef"
+
+for n in folders:
+    (d / n).mkdir(parents=True, exist_ok=True)
+
+print(f"[benign] PID {os.getpid()} - opening 6 documents in 6 folders...")
+
+files = []
+for n in folders:
+    path = d / n / "f.txt"
+    files.append(open(path, "w"))
+
+time.sleep(1.3)
+
+print("[benign] saving document edits...")
+for f in files:
+    f.write("Routine document edit.\n")
+    f.flush()
+
+time.sleep(1.3)
+
+for f in files:
+    f.close()
+
+print("[benign] simulating two document-extension changes...")
+for n in "ab":
+    source = d / n / "f.txt"
+    destination = d / n / "f.md"
+    if source.exists():
+        source.rename(destination)
+        print(f"[benign] renamed {source} -> {destination}")
+
+time.sleep(2)
+print("[benign] done. Check the dashboard's three behavioural features.")
+PY
