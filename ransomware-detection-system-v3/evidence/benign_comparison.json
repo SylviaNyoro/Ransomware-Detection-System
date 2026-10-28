@@ -1,0 +1,26 @@
+{
+  "demo": "benign",
+  "before_file_count": 10,
+  "after_file_count": 10,
+  "unchanged_count": 10,
+  "modified_count": 0,
+  "renamed_count": 0,
+  "added_count": 0,
+  "removed_count": 0,
+  "unchanged": [
+    "renamed_document_00.txt",
+    "renamed_document_01.txt",
+    "renamed_document_02.txt",
+    "renamed_document_03.txt",
+    "renamed_document_04.txt",
+    "renamed_document_05.txt",
+    "renamed_document_06.txt",
+    "renamed_document_07.txt",
+    "renamed_document_08.txt",
+    "renamed_document_09.txt"
+  ],
+  "modified": [],
+  "renamed": [],
+  "added": [],
+  "removed": []
+}

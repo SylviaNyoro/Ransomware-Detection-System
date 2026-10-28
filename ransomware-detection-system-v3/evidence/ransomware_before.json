@@ -1,0 +1,489 @@
+{
+  "demo": "ransomware",
+  "stage": "before",
+  "timestamp_utc": "2026-10-25T12:38:41.300287+00:00",
+  "directory": "/root/ransomware-detection-system-v3/data/decoy/final_ransomware_classification_demo",
+  "file_count": 96,
+  "files": [
+    {
+      "path": "folder_00/sample_00.txt",
+      "size_bytes": 135,
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05"
+    },
+    {
+      "path": "folder_00/sample_01.csv",
+      "size_bytes": 135,
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466"
+    },
+    {
+      "path": "folder_00/sample_02.json",
+      "size_bytes": 135,
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561"
+    },
+    {
+      "path": "folder_00/sample_03.log",
+      "size_bytes": 135,
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648"
+    },
+    {
+      "path": "folder_00/sample_04.md",
+      "size_bytes": 135,
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba"
+    },
+    {
+      "path": "folder_00/sample_05.xml",
+      "size_bytes": 135,
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04"
+    },
+    {
+      "path": "folder_00/sample_06.ini",
+      "size_bytes": 135,
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f"
+    },
+    {
+      "path": "folder_00/sample_07.cfg",
+      "size_bytes": 135,
+      "sha256": "ff31e4a75d97435a7a914b3ce43fed2445bf762334120d18c39fb82efd63ebe0"
+    },
+    {
+      "path": "folder_01/sample_00.txt",
+      "size_bytes": 135,
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05"
+    },
+    {
+      "path": "folder_01/sample_01.csv",
+      "size_bytes": 135,
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466"
+    },
+    {
+      "path": "folder_01/sample_02.json",
+      "size_bytes": 135,
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561"
+    },
+    {
+      "path": "folder_01/sample_03.log",
+      "size_bytes": 135,
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648"
+    },
+    {
+      "path": "folder_01/sample_04.md",
+      "size_bytes": 135,
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba"
+    },
+    {
+      "path": "folder_01/sample_05.xml",
+      "size_bytes": 135,
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04"
+    },
+    {
+      "path": "folder_01/sample_06.ini",
+      "size_bytes": 135,
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f"
+    },
+    {
+      "path": "folder_01/sample_07.cfg",
+      "size_bytes": 135,
+      "sha256": "ff31e4a75d97435a7a914b3ce43fed2445bf762334120d18c39fb82efd63ebe0"
+    },
+    {
+      "path": "folder_02/sample_00.txt",
+      "size_bytes": 135,
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05"
+    },
+    {
+      "path": "folder_02/sample_01.csv",
+      "size_bytes": 135,
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466"
+    },
+    {
+      "path": "folder_02/sample_02.json",
+      "size_bytes": 135,
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561"
+    },
+    {
+      "path": "folder_02/sample_03.log",
+      "size_bytes": 135,
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648"
+    },
+    {
+      "path": "folder_02/sample_04.md",
+      "size_bytes": 135,
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba"
+    },
+    {
+      "path": "folder_02/sample_05.xml",
+      "size_bytes": 135,
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04"
+    },
+    {
+      "path": "folder_02/sample_06.ini",
+      "size_bytes": 135,
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f"
+    },
+    {
+      "path": "folder_02/sample_07.cfg",
+      "size_bytes": 135,
+      "sha256": "ff31e4a75d97435a7a914b3ce43fed2445bf762334120d18c39fb82efd63ebe0"
+    },
+    {
+      "path": "folder_03/sample_00.txt",
+      "size_bytes": 135,
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05"
+    },
+    {
+      "path": "folder_03/sample_01.csv",
+      "size_bytes": 135,
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466"
+    },
+    {
+      "path": "folder_03/sample_02.json",
+      "size_bytes": 135,
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561"
+    },
+    {
+      "path": "folder_03/sample_03.log",
+      "size_bytes": 135,
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648"
+    },
+    {
+      "path": "folder_03/sample_04.md",
+      "size_bytes": 135,
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba"
+    },
+    {
+      "path": "folder_03/sample_05.xml",
+      "size_bytes": 135,
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04"
+    },
+    {
+      "path": "folder_03/sample_06.ini",
+      "size_bytes": 135,
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f"
+    },
+    {
+      "path": "folder_03/sample_07.cfg",
+      "size_bytes": 135,
+      "sha256": "ff31e4a75d97435a7a914b3ce43fed2445bf762334120d18c39fb82efd63ebe0"
+    },
+    {
+      "path": "folder_04/sample_00.txt",
+      "size_bytes": 135,
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05"
+    },
+    {
+      "path": "folder_04/sample_01.csv",
+      "size_bytes": 135,
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466"
+    },
+    {
+      "path": "folder_04/sample_02.json",
+      "size_bytes": 135,
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561"
+    },
+    {
+      "path": "folder_04/sample_03.log",
+      "size_bytes": 135,
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648"
+    },
+    {
+      "path": "folder_04/sample_04.md",
+      "size_bytes": 135,
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba"
+    },
+    {
+      "path": "folder_04/sample_05.xml",
+      "size_bytes": 135,
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04"
+    },
+    {
+      "path": "folder_04/sample_06.ini",
+      "size_bytes": 135,
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f"
+    },
+    {
+      "path": "folder_04/sample_07.cfg",
+      "size_bytes": 135,
+      "sha256": "ff31e4a75d97435a7a914b3ce43fed2445bf762334120d18c39fb82efd63ebe0"
+    },
+    {
+      "path": "folder_05/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_05/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_05/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_05/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_05/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_05/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_05/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_05/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_06/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_06/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_06/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_06/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_06/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_06/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_06/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_06/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_07/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_07/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_07/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_07/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_07/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_07/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_07/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_07/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_08/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_08/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_08/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_08/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_08/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_08/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_08/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_08/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_09/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_09/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_09/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_09/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_09/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_09/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_09/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_09/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_10/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_10/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_10/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_10/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_10/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_10/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_10/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_10/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    },
+    {
+      "path": "folder_11/sample_00.txt",
+      "size_bytes": 114,
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3"
+    },
+    {
+      "path": "folder_11/sample_01.csv",
+      "size_bytes": 114,
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f"
+    },
+    {
+      "path": "folder_11/sample_02.json",
+      "size_bytes": 114,
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac"
+    },
+    {
+      "path": "folder_11/sample_03.log",
+      "size_bytes": 114,
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448"
+    },
+    {
+      "path": "folder_11/sample_04.md",
+      "size_bytes": 114,
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853"
+    },
+    {
+      "path": "folder_11/sample_05.xml",
+      "size_bytes": 114,
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7"
+    },
+    {
+      "path": "folder_11/sample_06.ini",
+      "size_bytes": 114,
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50"
+    },
+    {
+      "path": "folder_11/sample_07.cfg",
+      "size_bytes": 114,
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81"
+    }
+  ]
+}

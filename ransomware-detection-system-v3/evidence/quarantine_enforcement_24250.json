@@ -1,0 +1,18 @@
+{
+  "demonstration": "controlled_quarantine_enforcement",
+  "pid": 24250,
+  "timestamp_utc": "2026-10-25T14:44:09.764661+00:00",
+  "model_classification_used": false,
+  "model_selected_quarantine": false,
+  "authorization_verified": true,
+  "response": {
+    "pid": 24250,
+    "action": "quarantine",
+    "response_executed": true,
+    "status": "suspended_verified"
+  },
+  "suspended_verified": true,
+  "resumed_verified": true,
+  "normal_exit": true,
+  "exit_code": 0
+}

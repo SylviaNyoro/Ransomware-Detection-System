@@ -1,0 +1,28 @@
+{
+  "demo": "quarantine",
+  "before_file_count": 12,
+  "after_file_count": 12,
+  "unchanged_count": 12,
+  "modified_count": 0,
+  "renamed_count": 0,
+  "added_count": 0,
+  "removed_count": 0,
+  "unchanged": [
+    "sample_00.txt",
+    "sample_01.txt",
+    "sample_02.txt",
+    "sample_03.txt",
+    "sample_04.txt",
+    "sample_05.txt",
+    "sample_06.txt",
+    "sample_07.txt",
+    "sample_08.txt",
+    "sample_09.txt",
+    "sample_10.txt",
+    "sample_11.txt"
+  ],
+  "modified": [],
+  "renamed": [],
+  "added": [],
+  "removed": []
+}

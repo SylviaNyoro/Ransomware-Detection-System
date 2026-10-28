@@ -91,3 +91,192 @@ def augment_training_set(
     )
 
     return X_res, y_res
+
+
+
+def generate_synthetic_samples(
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    target_size: int = 200,
+    random_state: int = 42,
+    allow_resampling: bool = False,
+) -> tuple[pd.DataFrame, pd.Series]:
+    """
+    Generate a balanced augmented training dataset.
+
+    Uses within-class interpolation and limited extrapolation.
+    All original training samples are retained.
+
+    Never call before splitting the original dataset.
+    """
+    if target_size < len(X_train):
+        raise ValueError("Target smaller than original training set.")
+
+    X_original = X_train[FEATURE_COLUMNS].reset_index(drop=True).copy()
+    y_original = pd.Series(y_train).reset_index(drop=True).copy()
+
+    rng = np.random.default_rng(random_state)
+
+    classes = sorted(y_original.unique())
+
+    if len(classes) != 2:
+        raise ValueError("Exactly two classes required.")
+
+    goals = {
+        classes[0]: target_size // 2,
+        classes[1]: target_size - target_size // 2,
+    }
+
+    synthetic_rows = []
+    synthetic_labels = []
+
+    seen = {
+        tuple(row) + (label,)
+        for row, label in zip(
+            X_original.to_numpy(),
+            y_original.to_numpy(),
+        )
+    }
+
+    for label in classes:
+        values = X_original.loc[
+            y_original == label
+        ].to_numpy(dtype=float)
+
+        required = goals[label] - len(values)
+
+        if required < 0:
+            raise ValueError("Class exceeds target allocation.")
+
+        if required > 0 and len(values) < 2:
+            raise ValueError(
+                f"Class {label} has insufficient originals."
+            )
+
+        feature_min = values.min(axis=0)
+        feature_max = values.max(axis=0)
+        spread = np.maximum(
+            values.std(axis=0), 1.0
+        )
+
+        generated = 0
+
+        # Progressively explore a wider neighborhood.
+        for expansion in (0.0, 0.25, 0.5, 1.0):
+            if generated >= required:
+                break
+
+            lower = np.maximum(
+                0,
+                feature_min - expansion * spread,
+            )
+
+            upper = (
+                feature_max + expansion * spread
+            )
+
+            for _ in range(30000):
+                if generated >= required:
+                    break
+
+                i, j = rng.choice(
+                    len(values),
+                    size=2,
+                    replace=False,
+                )
+
+                alpha = rng.uniform(-0.2, 1.2)
+
+                candidate = (
+                    alpha * values[i] +
+                    (1 - alpha) * values[j]
+                )
+
+                noise = rng.normal(
+                    0,
+                    0.25 * spread,
+                    size=len(FEATURE_COLUMNS),
+                )
+
+                candidate = np.rint(
+                    np.clip(
+                        candidate + noise,
+                        lower,
+                        upper,
+                    )
+                ).astype(int)
+
+                key = tuple(candidate) + (label,)
+
+                if key in seen:
+                    continue
+
+                seen.add(key)
+                synthetic_rows.append(candidate.tolist())
+                synthetic_labels.append(label)
+                generated += 1
+
+        if generated != required:
+            if not allow_resampling:
+                raise RuntimeError(
+                    f"Class {label}: generated {generated}/"
+                    f"{required} unique synthetic samples. "
+                    "Insufficient plausible feature diversity."
+                )
+
+            remaining = required - generated
+
+            # Resample from original training observations only.
+            # These are repeated rows, not new independent samples.
+            indices = rng.choice(
+                len(values),
+                size=remaining,
+                replace=True,
+            )
+
+            for idx in indices:
+                synthetic_rows.append(
+                    values[idx].astype(int).tolist()
+                )
+                synthetic_labels.append(label)
+
+            logger.warning(
+                "Class %s: %d unique synthetic observations "
+                "and %d resampled original observations",
+                label,
+                generated,
+                remaining,
+            )
+
+    X_generated = pd.DataFrame(
+        synthetic_rows,
+        columns=FEATURE_COLUMNS,
+    )
+
+    y_generated = pd.Series(
+        synthetic_labels,
+        name=y_original.name,
+    )
+
+    X_augmented = pd.concat(
+        [X_original, X_generated],
+        ignore_index=True,
+    )
+
+    y_augmented = pd.concat(
+        [y_original, y_generated],
+        ignore_index=True,
+    )
+
+    if len(X_augmented) != target_size:
+        raise AssertionError("Incorrect dataset size.")
+
+    logger.info(
+        "Synthetic augmentation: %d original + "
+        "%d synthetic = %d",
+        len(X_original),
+        len(X_generated),
+        len(X_augmented),
+    )
+
+    return X_augmented, y_augmented

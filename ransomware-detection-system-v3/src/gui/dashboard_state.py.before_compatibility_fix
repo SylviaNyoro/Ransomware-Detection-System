@@ -1,0 +1,122 @@
+"""Framework-independent state tracking for the ransomware dashboard."""
+
+from datetime import datetime
+
+
+class DashboardState:
+    """Track classifications, proposed responses, and detection history."""
+
+    def __init__(self, history_limit: int = 100):
+        self.history_limit = history_limit
+
+        self.counters = {
+            "total": 0,
+            "ransomware": 0,
+            "uncertain": 0,
+            "goodware": 0,
+            "continue": 0,
+            "quarantine": 0,
+            "terminate": 0,
+        }
+
+        self.history = []
+        self.logs = []
+
+        self.last_prediction = None
+        self.last_confidence = 0.0
+        self.last_pid = None
+        self.last_action = None
+        self.last_features = {}
+        self._reaction_times = []
+
+    def record_detection(self, data: dict) -> str:
+        """Record a classification received from the detection backend."""
+
+        prediction = data.get("prediction")
+        confidence = float(data.get("confidence", 0.0))
+        outcome = data.get("outcome")
+
+        if outcome is None:
+            outcome = "Ransomware" if prediction == 1 else "Benign"
+
+        outcome = str(outcome).capitalize()
+
+        if outcome not in {"Benign", "Uncertain", "Ransomware"}:
+            raise ValueError(f"Invalid classification: {outcome}")
+
+        action = str(data.get("action", "continue")).lower()
+        executed = bool(data.get("response_executed", False))
+        pid = data.get("pid")
+        features = data.get("features", {})
+        reaction_time_ms = data.get("reaction_time_ms")
+
+        self.last_prediction = outcome
+        self.last_confidence = confidence
+        self.last_pid = pid
+        self.last_action = action
+        self.last_features = features
+
+        self.counters["total"] += 1
+
+        category = {
+            "Benign": "goodware",
+            "Uncertain": "uncertain",
+            "Ransomware": "ransomware",
+        }[outcome]
+
+        self.counters[category] += 1
+
+        # Count proposed actions, not actual process interventions.
+        if action in {"continue", "quarantine", "terminate"}:
+            self.counters[action] += 1
+
+        if reaction_time_ms is not None:
+            self._reaction_times.append(float(reaction_time_ms))
+
+        timestamp = datetime.now().strftime("%H:%M:%S")
+
+        display_pid = (
+            "Unknown" if pid is None or pid == -1 else str(pid)
+        )
+
+        action_status = "EXECUTED" if executed else "PROPOSED"
+
+        entry = {
+            "time": timestamp,
+            "pid": display_pid,
+            "prediction": outcome.upper(),
+            "confidence": confidence,
+            "action": f"{action.upper()} ({action_status})",
+        }
+
+        self.history.append(entry)
+        self.history = self.history[-self.history_limit:]
+
+        log_line = (
+            f"PID={display_pid} | "
+            f"prediction={outcome.upper()} | "
+            f"ransomware_score={confidence * 100:.2f}% | "
+            f"action={action.upper()} ({action_status})"
+        )
+
+        self.logs.append(log_line)
+        return log_line
+
+    def reset_counters(self):
+        for key in self.counters:
+            self.counters[key] = 0
+
+    @property
+    def classifications(self) -> int:
+        return self.counters["total"]
+
+    @property
+    def threats(self) -> int:
+        return self.counters["ransomware"]
+
+    @property
+    def average_reaction_ms(self) -> float:
+        if not self._reaction_times:
+            return 0.0
+
+        return sum(self._reaction_times) / len(self._reaction_times)

@@ -1,0 +1,104 @@
+"""
+Seven-feature filesystem event aggregator.
+
+Maintains rolling monitoring windows and emits features
+only when new events have been recorded.
+
+Does not perform process suspension or termination.
+"""
+
+import threading
+import time
+
+from collections import defaultdict, deque
+from dataclasses import dataclass
+
+from src.feature_engineering.linux_filesystem_features import (
+    extract_linux_features,
+)
+
+
+@dataclass
+class TimedEvent:
+    timestamp: float
+    sequence: int
+    event: object
+
+
+class FilesystemAggregator:
+    def __init__(self, window_seconds=10.0):
+        if window_seconds <= 0:
+            raise ValueError(
+                "window_seconds must be positive"
+            )
+
+        self.window_seconds = window_seconds
+
+        self.events = defaultdict(deque)
+        self.last_emitted_sequence = {}
+        self.sequence = 0
+
+        self.lock = threading.Lock()
+
+    def handle_event(self, pid, event, timestamp=None):
+        if timestamp is None:
+            timestamp = time.time()
+
+        with self.lock:
+            self.sequence += 1
+
+            self.events[pid].append(
+                TimedEvent(
+                    timestamp=timestamp,
+                    sequence=self.sequence,
+                    event=event,
+                )
+            )
+
+    def poll(self, now=None):
+        if now is None:
+            now = time.time()
+
+        results = {}
+
+        with self.lock:
+            for pid in list(self.events):
+                window = self.events[pid]
+
+                cutoff = now - self.window_seconds
+
+                while (
+                    window
+                    and window[0].timestamp < cutoff
+                ):
+                    window.popleft()
+
+                if not window:
+                    del self.events[pid]
+
+                    self.last_emitted_sequence.pop(
+                        pid, None
+                    )
+                    continue
+
+                latest_sequence = window[-1].sequence
+
+                if (
+                    latest_sequence
+                    <= self.last_emitted_sequence.get(
+                        pid, 0
+                    )
+                ):
+                    continue
+
+                features = extract_linux_features(
+                    [item.event for item in window]
+                )
+
+                results[pid] = features
+
+                self.last_emitted_sequence[pid] = (
+                    latest_sequence
+                )
+
+        return results

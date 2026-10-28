@@ -140,6 +140,18 @@ def run_sim(target_dir: Path, delay: float, grace: float) -> dict:
                 outcome = worker_state(proc)
     finally:
         if proc is not None:
+            if outcome == "SUSPENDED":
+                print(
+                    f"\n[VERIFY] Worker PID {proc.pid} is reported suspended."
+                )
+                print(
+                    "[VERIFY] Check its state from a second terminal now."
+                )
+                try:
+                    input("[VERIFY] Press Enter here to continue cleanup...")
+                except EOFError:
+                    pass
+
             cleanup_worker(proc)
         time.sleep(0.5)
         stop_event.set()

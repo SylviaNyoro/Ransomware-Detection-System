@@ -1,0 +1,333 @@
+{
+  "pid": 32603,
+  "command": [
+    "/root/venv/bin/python",
+    "/root/ransomware-detection-system-v3/ransomware_classification_demo.py"
+  ],
+  "create_time": 1793033903.46,
+  "observations": [
+    {
+      "timestamp": "2026-10-26T16:58:24.283672+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:24.485752+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:24.687911+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:24.888862+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:25.090655+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:25.291518+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:25.493264+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:25.695476+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:25.896354+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:26.101749+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:26.303229+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:26.504183+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:26.704787+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:26.905444+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:27.105985+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:27.308457+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:27.509105+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:27.709885+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:27.910896+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:28.133226+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:28.355210+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:28.558406+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:28.784749+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:29.009927+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:29.211422+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:29.416957+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:29.619287+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:29.821074+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:30.033785+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:30.238659+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:30.439738+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:30.642408+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:30.844661+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:31.077533+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:31.288117+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:31.491587+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:31.692350+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:31.894491+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:32.095245+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:32.295864+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:32.496852+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:32.697526+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:32.898577+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:33.099592+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:33.300635+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:33.503296+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:33.710321+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:33.910978+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:34.112072+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:34.313193+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:34.515131+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:34.716550+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:34.919513+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:35.121105+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:35.322473+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:35.523415+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:35.724981+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:35.925838+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:36.127302+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:36.329094+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:36.529751+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:36.730095+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:36.932073+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-26T16:58:37.135434+00:00",
+      "status": "zombie",
+      "running": false
+    }
+  ],
+  "observed_running": true,
+  "observed_suspended": false,
+  "last_observed_status": "zombie"
+}

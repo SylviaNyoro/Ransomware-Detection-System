@@ -1,0 +1,96 @@
+"""Live seven-feature RanDS detection and response integration."""
+
+import logging
+
+import yaml
+
+from src.model.predictor import RansomwarePredictor
+
+
+logger = logging.getLogger(__name__)
+
+
+class LiveDetector:
+    """Classify observed filesystem activity using the RanDS model."""
+
+    def __init__(
+        self,
+        model_path: str,
+        scaler_path: str | None = None,
+        terminate_threshold: float = 0.85,
+        quarantine_threshold: float = 0.50,
+        response_mode: str = "observe",
+        demo_caps: dict | None = None,
+        benign_upper_threshold: float = 0.20,
+    ):
+        if response_mode not in {"observe", "enforce"}:
+            raise ValueError("Invalid response mode.")
+
+        self.predictor = RansomwarePredictor(
+            model_path=model_path,
+            scaler_path=scaler_path,
+        )
+
+        self.terminate_threshold = terminate_threshold
+        self.quarantine_threshold = quarantine_threshold
+        self.benign_upper_threshold = benign_upper_threshold
+        self.response_mode = response_mode
+
+        # Retained for compatibility with older callers.
+        self.demo_caps = demo_caps or {}
+
+    def on_features(self, pid: int, features):
+        """Classify one feature vector and return a detection record."""
+        prediction, confidence = self.predictor.predict(features)
+
+        # Preserve the experimentally selected classification threshold.
+        if confidence < self.benign_upper_threshold:
+            outcome = "Benign"
+        elif confidence < self.predictor.threshold:
+            outcome = "Uncertain"
+        else:
+            outcome = "Ransomware"
+
+        # Proposed responses only. No process intervention occurs.
+        if outcome != "Ransomware":
+            action = "continue"
+        elif confidence >= self.terminate_threshold:
+            action = "terminate"
+        else:
+            action = "quarantine"
+
+        prediction = int(outcome == "Ransomware")
+
+        return {
+            "pid": pid,
+            "prediction": prediction,
+            "confidence": confidence,
+            "outcome": outcome,
+            "action": action,
+            "mode": "observe",
+            "requested_mode": self.response_mode,
+            "response_executed": False,
+            "capped_from": None,
+        }
+
+
+def load_config(path: str = "config.yaml") -> dict:
+    """Load the YAML application configuration."""
+    with open(path, "r", encoding="utf-8") as file:
+        return yaml.safe_load(file)
+
+
+def create_live_detector(config: dict) -> LiveDetector:
+    """Create the detector using the configured RanDS model."""
+    response = config["response"]
+    classification = config.get("classification", {})
+
+    return LiveDetector(
+        model_path=config["paths"]["model_path"],
+        terminate_threshold=response["terminate_confidence_threshold"],
+        quarantine_threshold=response["quarantine_confidence_threshold"],
+        response_mode=response.get("mode", "observe"),
+        benign_upper_threshold=classification.get(
+            "benign_upper_threshold", 0.20
+        ),
+    )

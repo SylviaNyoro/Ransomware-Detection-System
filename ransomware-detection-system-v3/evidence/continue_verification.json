@@ -1,0 +1,12 @@
+{
+  "pid": 16295,
+  "classification": "Benign",
+  "confidence": 0.10326929808949087,
+  "action": "CONTINUE",
+  "mode": "enforce",
+  "decision_timestamp_utc": "2026-10-25T12:54:45.701952+00:00",
+  "running_observations_after_decision": 59,
+  "observed_running_duration_seconds": 11.905,
+  "suspension_observed": false,
+  "verified": true
+}

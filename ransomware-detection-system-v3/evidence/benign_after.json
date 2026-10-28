@@ -1,0 +1,59 @@
+{
+  "demo": "benign",
+  "stage": "after",
+  "timestamp_utc": "2026-10-25T12:40:19.603855+00:00",
+  "directory": "/root/ransomware-detection-system-v3/data/decoy/final_benign_demo",
+  "file_count": 10,
+  "files": [
+    {
+      "path": "renamed_document_00.txt",
+      "size_bytes": 34,
+      "sha256": "95dff98504c1c66550627cf18578895728925a34862394e092dcfbbb0998fd58"
+    },
+    {
+      "path": "renamed_document_01.txt",
+      "size_bytes": 34,
+      "sha256": "4ffe921bec7c18433abfbb22b6ac1c1fc2e9db67e766c9bd9f646902553f9834"
+    },
+    {
+      "path": "renamed_document_02.txt",
+      "size_bytes": 34,
+      "sha256": "059e35b70a7659766d39306372ecb822801db0032c0999a8bffb3c88686747b6"
+    },
+    {
+      "path": "renamed_document_03.txt",
+      "size_bytes": 34,
+      "sha256": "7ab335095b04762c07c8659151799f7e3ec0bf84e2eff18ebf0e69251066e88d"
+    },
+    {
+      "path": "renamed_document_04.txt",
+      "size_bytes": 34,
+      "sha256": "296f33441055c5743c2c4c771c2c53fd0d6aa8f2eaf6256cd61cc5b5da5694d0"
+    },
+    {
+      "path": "renamed_document_05.txt",
+      "size_bytes": 34,
+      "sha256": "feacece30c90d64a9cd4c158f532f4d9253b71d9e1afa2d4214043867d4e4ac1"
+    },
+    {
+      "path": "renamed_document_06.txt",
+      "size_bytes": 34,
+      "sha256": "3cccee79b0663723f295e94343d27037764907297c62e426e51ad56f492c4c97"
+    },
+    {
+      "path": "renamed_document_07.txt",
+      "size_bytes": 34,
+      "sha256": "1952f79e0a639d543f74936cdce110f77eae217068e1db918891c198a2dc318c"
+    },
+    {
+      "path": "renamed_document_08.txt",
+      "size_bytes": 34,
+      "sha256": "14ca1aee0228cca296f6b56baeebb3a49c63ceb11c8d7d8fde49beaf2f7167ae"
+    },
+    {
+      "path": "renamed_document_09.txt",
+      "size_bytes": 34,
+      "sha256": "c7486cdf689e5e36f21a1669b0bc3129402b52ad3ffaa27a8481113938601711"
+    }
+  ]
+}

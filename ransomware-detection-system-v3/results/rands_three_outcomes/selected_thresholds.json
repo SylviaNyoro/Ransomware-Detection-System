@@ -1,0 +1,13 @@
+{
+  "lower_threshold": 0.2,
+  "upper_threshold": 0.625,
+  "selection_dataset": "validation",
+  "maximum_uncertain_rate": 0.2,
+  "metrics": {
+    "uncertain_rate": 0.14426803350418801,
+    "ransomware_missed_rate": 0.02714770494731202,
+    "ransomware_review_rate": 0.972852295052688,
+    "benign_false_alarm_rate": 0.09166666666666666,
+    "benign_escalation_rate": 0.2925
+  }
+}

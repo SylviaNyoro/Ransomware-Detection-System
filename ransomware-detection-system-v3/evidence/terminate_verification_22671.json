@@ -1,0 +1,28 @@
+{
+  "pid": 22671,
+  "result": "PASS",
+  "checks": {
+    "matching_pid": true,
+    "ransomware_classification": true,
+    "terminate_threshold_reached": true,
+    "authorized_enforcement": true,
+    "termination_verified": true,
+    "process_running_observed": true,
+    "feature_vector_recorded": true
+  },
+  "classification": "Ransomware",
+  "confidence": 0.9083499002631357,
+  "action": "terminate",
+  "enforcement_status": "terminated_verified",
+  "features": {
+    "changed_file_count": 44,
+    "file_access_breadth": 44,
+    "directory_traversal_breadth": 6,
+    "file_creation_count": 0,
+    "file_deletion_count": 0,
+    "extension_diversity": 8,
+    "file_activity_total": 44
+  },
+  "process_observations": 65,
+  "note": "Termination verified by the enforcement decision. The launcher independently reported exit code -15 (SIGTERM)."
+}

@@ -1,57 +1,48 @@
-# Central configuration for the Enterprise Ransomware Detection System
-# Chapter references are to the 4th-year proposal.
-
 paths:
-  raw_mlran_dir: "data/raw/mlran"          # raw Cuckoo Sandbox reports (Ch. 3.6)
-  processed_dataset: "data/processed/features.csv"
-  model_path: "models/random_forest.joblib"
-  log_dir: "logs"
-
-# Directories the live Watchdog observer should monitor (Ch. 3.4 / demo, Ch. 3.6)
+  processed_dataset: data/processed/features.csv
+  model_path: models/rands_random_forest_filesystem.joblib
+  log_dir: logs
 monitor:
   watched_directories:
-    - "data/decoy"          # placeholder decoy directory for live demo
+  - data/decoy
   poll_interval_seconds: 1.0
-
-# Feature engineering (Ch. 3.6): the three aggregate features this study is built around
+  window_seconds: 10.0
+  min_events: 10
+  enable_audit_attribution: true
 features:
   names:
-    - modification_frequency
-    - extension_change_rate
-    - file_access_breadth
-  # extensions considered "normal" for extension-change-rate scoring;
-  # anything else encountered on a write/create/rename is counted as unusual
+  - changed_file_count
+  - file_access_breadth
+  - directory_traversal_breadth
+  - file_creation_count
+  - file_deletion_count
+  - extension_diversity
+  - file_activity_total
   common_extensions:
-    - ".txt"
-    - ".docx"
-    - ".xlsx"
-    - ".pdf"
-    - ".csv"
-    - ".png"
-    - ".jpg"
-    - ".py"
-    - ".json"
-    - ".log"
-
-# Random Forest hyperparameters (Ch. 3, model training)
+  - .txt
+  - .docx
+  - .xlsx
+  - .pdf
+  - .csv
+  - .png
+  - .jpg
+  - .py
+  - .json
+  - .log
 model:
   n_estimators: 200
   max_depth: null
   random_state: 42
   test_size: 0.2
-
-# Training-set augmentation (Step 3): SMOTE/ADASYN over the real feature
-# vectors, applied only to the training split -- never the test split.
-# See src/model/augmentation.py for full rationale and the small-sample
-# k_neighbors caveat.
 augmentation:
   enabled: true
-  method: smote          # "smote", "adasyn", or "none"
-  k_neighbors: 3          # capped automatically if the minority class is smaller
-
-# Confidence bands for the response layer (Ch. 4.6, Random Forest Decision Workflow)
+  method: synthetic
+  target_size: 200
+  k_neighbors: 3
 response:
-  terminate_confidence_threshold: 0.85   # >=80% malicious -> Terminate
-  quarantine_confidence_threshold: 0.50  # 50-79% -> Quarantine, <50% -> Continue
-  mode: enforce   # "observe" (classify + log only, default/safe) or "enforce" (actually act via psutil)
-                                                                                                                   
+  terminate_confidence_threshold: 0.625
+  quarantine_confidence_threshold: 0.2
+  mode: enforce
+classification:
+  benign_upper_threshold: 0.2
+  ransomware_threshold: 0.625

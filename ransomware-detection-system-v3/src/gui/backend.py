@@ -8,6 +8,8 @@ Communication with the dashboard uses JSON Lines through stdout.
 """
 
 import json
+from datetime import datetime, timezone
+from pathlib import Path
 import os
 import sys
 import time
@@ -26,6 +28,17 @@ from src.monitor.watcher import start_monitor
 def send_message(message: dict):
     """Send one JSON message to the dashboard."""
     print(json.dumps(message), flush=True)
+
+
+def save_detection_evidence(record):
+    """Append a timestamped detection decision to persistent JSONL evidence."""
+    evidence_dir = Path(PROJECT_ROOT) / "evidence"
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+
+    evidence_file = evidence_dir / "detection_decisions.jsonl"
+
+    with evidence_file.open("a", encoding="utf-8") as stream:
+        stream.write(json.dumps(record, default=str) + "\n")
 
 
 def main():
@@ -91,29 +104,57 @@ def main():
                 else:
                     feature_data = {}
 
+                evidence_record = {
+                    "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                    "pid": result["pid"],
+                    "prediction": result["prediction"],
+                    "outcome": result["outcome"],
+                    "confidence": result["confidence"],
+                    "action": result["action"],
+                    "mode": result["mode"],
+                    "response_executed": result["response_executed"],
+                    "authorized": result["authorized"],
+                    "enforcement_status": result["enforcement_status"],
+                    "features": feature_data,
+                }
+
+                save_detection_evidence(evidence_record)
+
                 send_message({
                     "type": "detection",
                     "data": {
                         "pid": result["pid"],
                         "prediction": result["prediction"],
+                        "outcome": result["outcome"],
                         "confidence": result["confidence"],
                         "action": result["action"],
                         "mode": result["mode"],
+                        "response_executed": result["response_executed"],
+                        "authorized": result["authorized"],
+                        "enforcement_status": result["enforcement_status"],
                         "features": feature_data,
                     },
                 })
 
-                action  = result["action"]
-                conf    = result["confidence"]
-                pred    = "RANSOMWARE" if result["prediction"] == 1 else "goodware"
+                action = result["action"]
+                conf = result["confidence"]
+                outcome = result["outcome"].upper()
                 pid_val = result["pid"]
-                mode    = result["mode"]
-                if action == "terminate":
-                    log_line = f"⛔ TERMINATED  |  {pred}  |  confidence={conf:.1%}  |  PID={pid_val}  |  mode={mode}"
-                elif action == "quarantine":
-                    log_line = f"⚠  QUARANTINED  |  {pred}  |  confidence={conf:.1%}  |  PID={pid_val}  |  mode={mode}"
-                else:
-                    log_line = f"✓  CONTINUE  |  {pred}  |  confidence={conf:.1%}  |  PID={pid_val}  |  mode={mode}"
+
+                executed = result["response_executed"]
+                status = result["enforcement_status"]
+                mode = result["mode"]
+
+                log_line = (
+                    f"{'EXECUTED' if executed else 'NOT EXECUTED'} | "
+                    f"{outcome} | "
+                    f"ransomware_score={conf:.1%} | "
+                    f"PID={pid_val} | "
+                    f"action={action.upper()} | "
+                    f"mode={mode} | "
+                    f"response_executed={executed} | "
+                    f"status={status}"
+                )
                 send_message({"type": "log", "message": log_line})
 
             except Exception as exc:
@@ -128,6 +169,10 @@ def main():
             poll_interval_seconds=poll_interval,
             window_seconds=window_seconds,
             on_features=on_features,
+            min_events=monitor_config.get("min_events", 1),
+            enable_audit_attribution=monitor_config.get(
+                "enable_audit_attribution", False
+            ),
         )
 
         try:

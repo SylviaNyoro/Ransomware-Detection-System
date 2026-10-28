@@ -1,16 +1,22 @@
-import pytest
-pytest.importorskip("watchdog")
+"""Integration test for seven-feature live filesystem monitoring."""
 
 import time
 
+import pytest
+
+pytest.importorskip("watchdog")
+
 from src.monitor.watcher import start_monitor
+from src.feature_engineering.rands_filesystem_features import FEATURE_COLUMNS
+
 
 COMMON_EXT = [".txt"]
 
 
+@pytest.mark.integration
 def test_start_monitor_detects_real_file_activity(tmp_path):
-    """End-to-end: a real Observer watching a real directory picks up
-    real file writes and produces a FeatureVector via on_features."""
+    """Verify Watchdog produces seven features from real filesystem events."""
+
     captured = []
 
     observer, stop_event = start_monitor(
@@ -18,30 +24,54 @@ def test_start_monitor_detects_real_file_activity(tmp_path):
         common_extensions=COMMON_EXT,
         poll_interval_seconds=0.2,
         window_seconds=5,
-        on_features=lambda pid, fv: captured.append((pid, fv)),
+        on_features=lambda pid, features: captured.append(
+            (pid, features)
+        ),
     )
 
     try:
-        # Simulate "ransomware-like" activity: rapid creation of files
-        # with an unusual extension, matching what compute_features()
-        # should flag.
+        # Harmless filesystem activity in pytest's temporary directory.
         for i in range(5):
-            (tmp_path / f"file{i}.txt").write_text("hello")
-            (tmp_path / f"file{i}.txt").rename(tmp_path / f"file{i}.locked")
+            original = tmp_path / f"file{i}.txt"
+            renamed = tmp_path / f"file{i}.locked"
 
-        # Give the OS + watchdog + poll loop time to catch up.
+            original.write_text("hello")
+            original.rename(renamed)
+
         deadline = time.time() + 5
-        while time.time() < deadline and not captured:
+
+        while time.time() < deadline:
+            if captured and any(
+                features["file_creation_count"] > 0
+                and features["extension_diversity"] >= 2
+                for _, features in captured
+            ):
+                break
+
             time.sleep(0.2)
+
     finally:
         stop_event.set()
         observer.stop()
         observer.join(timeout=5)
 
-    assert captured, "expected at least one FeatureVector to be captured"
-    # At least one observed feature vector should show real signal:
-    # multiple creates and an unusual extension.
-    seen_modification = any(fv.modification_frequency > 0 for _, fv in captured)
-    seen_extension_change = any(fv.extension_change_rate > 0 for _, fv in captured)
-    assert seen_modification
-    assert seen_extension_change
+    assert captured, "No filesystem features were captured."
+
+    for pid, features in captured:
+        assert isinstance(features, dict)
+        assert set(features) == set(FEATURE_COLUMNS)
+
+    assert any(
+        features["file_creation_count"] > 0
+        for _, features in captured
+    ), "Expected file creation activity."
+
+    assert any(
+        features["extension_diversity"] >= 2
+        for _, features in captured
+    ), "Expected multiple file extensions."
+
+    assert any(
+        features["file_activity_total"] > 0
+        for _, features in captured
+    ), "Expected filesystem activity."

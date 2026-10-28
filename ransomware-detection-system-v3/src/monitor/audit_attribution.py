@@ -1,0 +1,416 @@
+"""Parse Linux Audit records for filesystem PID attribution.
+
+Read-only parser. Does not change audit rules or execute responses.
+"""
+
+import os
+import re
+from collections import defaultdict
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class AuditFileOperation:
+    timestamp: float
+    pid: int
+    syscall: str
+    source_path: str
+    destination_path: str | None = None
+
+
+_AUDIT_FIELD_PATTERN = re.compile(
+    r'(\w+)=("(?:[^"\\]|\\.)*"|\S+)'
+)
+
+
+def _fields(line):
+    """Extract Linux Audit fields using a compiled regex."""
+    fields = {}
+
+    for key, value in _AUDIT_FIELD_PATTERN.findall(line):
+        if value.startswith('"') and value.endswith('"'):
+            value = value[1:-1]
+
+        fields[key] = value
+
+    return fields
+
+
+def parse_audit_records(raw_text):
+    """Return successful rename operations with verified source/destination.
+
+    Records are grouped by the kernel audit event ID. Unrelated PATH and
+    SYSCALL records are never combined.
+    """
+    grouped = defaultdict(list)
+
+    for line in raw_text.splitlines():
+        match = re.search(
+            r"msg=audit\((\d+(?:\.\d+)?):(\d+)\)",
+            line,
+        )
+        if match:
+            grouped[match.group(2)].append(
+                (float(match.group(1)), line)
+            )
+
+    operations = []
+
+    for records in grouped.values():
+        syscall = None
+        paths = []
+        cwd = None
+        timestamp = records[0][0]
+
+        for _, line in records:
+            fields = _fields(line)
+            record_type = fields.get("type")
+
+            if record_type == "SYSCALL":
+                syscall = fields
+            elif record_type == "CWD":
+                cwd = fields.get("cwd")
+            elif record_type == "PATH":
+                paths.append(fields)
+
+        if not syscall:
+            continue
+
+        if syscall.get("success") != "yes":
+            continue
+
+        if syscall.get("syscall") not in ("82", "264", "316"):
+            continue
+
+        if syscall.get("arch") != "c000003e":
+            continue
+
+        try:
+            pid = int(syscall["pid"])
+        except (KeyError, ValueError):
+            continue
+
+        sources = [
+            p["name"] for p in paths
+            if p.get("nametype") == "DELETE"
+            and p.get("name")
+        ]
+        destinations = [
+            p["name"] for p in paths
+            if p.get("nametype") == "CREATE"
+            and p.get("name")
+        ]
+
+        if len(sources) != 1 or len(destinations) != 1:
+            continue
+
+        def absolute(path):
+            if os.path.isabs(path):
+                return os.path.normpath(path)
+            if not cwd:
+                return None
+            return os.path.normpath(os.path.join(cwd, path))
+
+        source = absolute(sources[0])
+        destination = absolute(destinations[0])
+
+        if source is None or destination is None:
+            continue
+
+        operations.append(
+            AuditFileOperation(
+                timestamp=timestamp,
+                pid=pid,
+                syscall="rename",
+                source_path=source,
+                destination_path=destination,
+            )
+        )
+
+    return operations
+
+
+def match_rename_pid(
+    operations,
+    source_path,
+    destination_path,
+    event_timestamp=None,
+    tolerance_seconds=2.0,
+):
+    """Find a unique audit PID for a watchdog rename event.
+
+    Returns -1 when no reliable attribution is available.
+    """
+    import time
+
+    if not source_path or not destination_path:
+        return -1
+
+    if event_timestamp is None:
+        event_timestamp = time.time()
+
+    source = os.path.normpath(os.path.abspath(source_path))
+    destination = os.path.normpath(os.path.abspath(destination_path))
+
+    matches = [
+        operation
+        for operation in operations
+        if operation.syscall == "rename"
+        and operation.source_path == source
+        and operation.destination_path == destination
+        and abs(operation.timestamp - event_timestamp)
+        <= tolerance_seconds
+    ]
+
+    if len(matches) != 1:
+        return -1
+
+    return matches[0].pid
+
+
+def parse_audit_creations(raw_text):
+    """Extract successful x86-64 openat file-creation operations.
+
+    Only accepts records explicitly marked CREATE.
+    Does not infer a PID from unrelated audit records.
+    """
+    operations = []
+
+    grouped = defaultdict(list)
+
+    for line in raw_text.splitlines():
+        match = re.search(
+            r"msg=audit\((\d+(?:\.\d+)?):(\d+)\)",
+            line,
+        )
+        if match:
+            grouped[match.group(2)].append(
+                (float(match.group(1)), line)
+            )
+
+    for records in grouped.values():
+        syscall = None
+        cwd = None
+        paths = []
+
+        for _, line in records:
+            fields = _fields(line)
+
+            if fields.get("type") == "SYSCALL":
+                syscall = fields
+            elif fields.get("type") == "CWD":
+                cwd = fields.get("cwd")
+            elif fields.get("type") == "PATH":
+                paths.append(fields)
+
+        if not syscall:
+            continue
+
+        if (
+            syscall.get("success") != "yes"
+            or syscall.get("arch") != "c000003e"
+            or syscall.get("syscall") != "257"
+        ):
+            continue
+
+        try:
+            pid = int(syscall["pid"])
+        except (KeyError, ValueError):
+            continue
+
+        created_paths = [
+            p["name"]
+            for p in paths
+            if p.get("nametype") == "CREATE"
+            and p.get("name")
+        ]
+
+        if len(created_paths) != 1:
+            continue
+
+        path = created_paths[0]
+
+        if not os.path.isabs(path):
+            if not cwd:
+                continue
+            path = os.path.join(cwd, path)
+
+        operations.append(
+            AuditFileOperation(
+                timestamp=records[0][0],
+                pid=pid,
+                syscall="create",
+                source_path=os.path.normpath(path),
+            )
+        )
+
+    return operations
+
+
+def parse_audit_modifications(raw_text):
+    """Parse successful audited writes to existing files.
+
+    Match SYSCALL, CWD and PATH records by audit event ID.
+    Accept only openat operations with write access and one
+    matching existing-file path.
+    """
+    grouped = defaultdict(list)
+
+    for line in raw_text.splitlines():
+        match = re.search(
+            r"msg=audit\((\d+(?:\.\d+)?):(\d+)\)",
+            line,
+        )
+        if match:
+            grouped[match.group(2)].append(
+                (float(match.group(1)), line)
+            )
+
+    operations = []
+
+    for records in grouped.values():
+        syscall = None
+        cwd = None
+        paths = []
+
+        for _, line in records:
+            fields = _fields(line)
+
+            if fields.get("type") == "SYSCALL":
+                syscall = fields
+            elif fields.get("type") == "CWD":
+                cwd = fields.get("cwd")
+            elif fields.get("type") == "PATH":
+                paths.append(fields)
+
+        if not syscall:
+            continue
+
+        if (
+            syscall.get("success") != "yes"
+            or syscall.get("arch") != "c000003e"
+            or syscall.get("syscall") != "257"
+        ):
+            continue
+
+        try:
+            flags = int(syscall["a2"], 16)
+            pid = int(syscall["pid"])
+        except (KeyError, ValueError):
+            continue
+
+        # Require write access or write-related flags.
+        write_access = (flags & os.O_ACCMODE) in (
+            os.O_WRONLY,
+            os.O_RDWR,
+        )
+
+        if not write_access:
+            continue
+
+        modified_paths = [
+            p["name"]
+            for p in paths
+            if p.get("nametype") == "NORMAL"
+            and p.get("name")
+        ]
+
+        if len(modified_paths) != 1:
+            continue
+
+        path = modified_paths[0]
+
+        if not os.path.isabs(path):
+            if not cwd:
+                continue
+            path = os.path.join(cwd, path)
+
+        operations.append(
+            AuditFileOperation(
+                timestamp=records[0][0],
+                pid=pid,
+                syscall="modify",
+                source_path=os.path.normpath(path),
+            )
+        )
+
+    return operations
+
+
+def parse_audit_deletions(raw_text):
+    """Extract verified x86-64 unlink/unlinkat operations.
+
+    Each result requires a successful syscall and exactly one deleted
+    file path belonging to the same Linux audit event.
+    """
+    grouped = defaultdict(list)
+
+    for line in raw_text.splitlines():
+        match = re.search(
+            r"msg=audit\((\d+(?:\.\d+)?):(\d+)\)",
+            line,
+        )
+        if match:
+            grouped[match.group(2)].append(
+                (float(match.group(1)), line)
+            )
+
+    operations = []
+
+    for records in grouped.values():
+        syscall = None
+        cwd = None
+        paths = []
+
+        for _, line in records:
+            fields = _fields(line)
+
+            if fields.get("type") == "SYSCALL":
+                syscall = fields
+            elif fields.get("type") == "CWD":
+                cwd = fields.get("cwd")
+            elif fields.get("type") == "PATH":
+                paths.append(fields)
+
+        if not syscall:
+            continue
+
+        if (
+            syscall.get("success") != "yes"
+            or syscall.get("arch") != "c000003e"
+            or syscall.get("syscall") not in ("87", "263")
+        ):
+            continue
+
+        try:
+            pid = int(syscall["pid"])
+        except (KeyError, ValueError):
+            continue
+
+        deleted_paths = [
+            p["name"]
+            for p in paths
+            if p.get("nametype") == "DELETE"
+            and p.get("name")
+        ]
+
+        if len(deleted_paths) != 1:
+            continue
+
+        path = deleted_paths[0]
+
+        if not os.path.isabs(path):
+            if not cwd:
+                continue
+            path = os.path.join(cwd, path)
+
+        operations.append(
+            AuditFileOperation(
+                timestamp=records[0][0],
+                pid=pid,
+                syscall="delete",
+                source_path=os.path.normpath(path),
+            )
+        )
+
+    return operations

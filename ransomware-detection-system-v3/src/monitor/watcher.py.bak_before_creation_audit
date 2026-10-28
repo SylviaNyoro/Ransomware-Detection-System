@@ -1,0 +1,443 @@
+"""
+Real-time file-system monitor for the Enterprise Ransomware Detection System.
+
+The monitor:
+    1. Watches the decoy directory for filesystem activity.
+    2. Attempts to attribute activity to a process.
+    3. Maintains a rolling behavioral window.
+    4. Computes the same FeatureVector used by the offline pipeline.
+    5. Sends features to the live detection/model layer.
+
+Important:
+    The rolling window remains 10 seconds, but the same activity is
+    emitted only once. This prevents repeated classifications caused
+    by polling the same unchanged window every second.
+"""
+
+import threading
+import time
+from collections import defaultdict, deque
+from dataclasses import dataclass
+
+import psutil
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+
+from src.feature_engineering.features import (
+    EventType,
+    FeatureVector,
+    FileEvent,
+    compute_features,
+    normalize_path,
+)
+from src.monitor.audit_reader import AuditRenameReader
+from src.monitor.filesystem_aggregator import FilesystemAggregator
+from src.utils.logger import get_logger
+
+
+UNKNOWN_PID = -1
+
+
+class ProcessAttributor:
+    """
+    Best-effort mapping from a file path to the PID that touched it.
+
+    The implementation checks currently-open file handles using psutil.
+    If the process cannot be identified, UNKNOWN_PID (-1) is used.
+    """
+
+    def __init__(self, refresh_interval_seconds: float = 1.0):
+        self._refresh_interval = refresh_interval_seconds
+        self._last_refresh = 0.0
+        self._path_to_pid: dict[str, int] = {}
+        self._lock = threading.Lock()
+
+    def _snapshot(self) -> dict[str, int]:
+        mapping: dict[str, int] = {}
+
+        for proc in psutil.process_iter(["pid"]):
+            try:
+                for file_handle in proc.open_files():
+                    mapping[
+                        normalize_path(file_handle.path)
+                    ] = proc.pid
+
+            except (
+                psutil.NoSuchProcess,
+                psutil.AccessDenied,
+                psutil.ZombieProcess,
+            ):
+                continue
+
+        return mapping
+
+    def _refresh_if_stale(self):
+        now = time.time()
+
+        if now - self._last_refresh >= self._refresh_interval:
+            snapshot = self._snapshot()
+
+            with self._lock:
+                self._path_to_pid = snapshot
+                self._last_refresh = now
+
+    def attribute(self, path: str) -> int:
+        """
+        Return the best-guess PID for a file path.
+
+        Returns UNKNOWN_PID when no process can be identified.
+        """
+
+        self._refresh_if_stale()
+
+        with self._lock:
+            return self._path_to_pid.get(
+                normalize_path(path),
+                UNKNOWN_PID,
+            )
+
+
+@dataclass
+class _TimestampedEvent:
+    timestamp: float
+    event: FileEvent
+
+
+class LiveAggregator:
+    """
+    Maintains a rolling per-process behavioral window.
+
+    The important distinction is:
+
+        rolling window = 10 seconds
+
+        detection emission = only when NEW activity occurs
+
+    Therefore, polling every second does not repeatedly classify the
+    exact same filesystem activity.
+    """
+
+    def __init__(
+        self,
+        common_extensions: list[str],
+        window_seconds: float = 10.0,
+    ):
+        self._common_extensions = common_extensions
+        self._window_seconds = window_seconds
+
+        self._events: dict[
+            int,
+            deque[_TimestampedEvent],
+        ] = defaultdict(deque)
+
+        # Number of events that existed the last time this PID was emitted.
+        self._last_emitted_event_count: dict[int, int] = {}
+
+        self._lock = threading.Lock()
+
+    def handle_event(
+        self,
+        pid: int,
+        file_event: FileEvent,
+        timestamp: float | None = None,
+    ):
+        """
+        Add a new filesystem event to the process's rolling window.
+        """
+
+        ts = (
+            timestamp
+            if timestamp is not None
+            else time.time()
+        )
+
+        with self._lock:
+            self._events[pid].append(
+                _TimestampedEvent(
+                    timestamp=ts,
+                    event=file_event,
+                )
+            )
+
+    def _prune_stale(
+        self,
+        pid: int,
+        now: float,
+    ):
+        """
+        Remove events older than the rolling window.
+        """
+
+        window = self._events[pid]
+
+        cutoff = now - self._window_seconds
+
+        while window and window[0].timestamp < cutoff:
+            window.popleft()
+
+    def poll(self) -> dict[int, FeatureVector]:
+        """
+        Compute features only for processes with NEW activity.
+
+        This prevents the same activity from being classified repeatedly
+        on every polling cycle.
+        """
+
+        now = time.time()
+
+        results: dict[int, FeatureVector] = {}
+
+        with self._lock:
+
+            for pid in list(self._events.keys()):
+
+                self._prune_stale(
+                    pid,
+                    now,
+                )
+
+                window = self._events[pid]
+
+                if not window:
+                    del self._events[pid]
+
+                    self._last_emitted_event_count.pop(
+                        pid,
+                        None,
+                    )
+
+                    continue
+
+                current_event_count = len(window)
+
+                previous_event_count = (
+                    self._last_emitted_event_count.get(
+                        pid,
+                        0,
+                    )
+                )
+
+                # No new filesystem activity since the last emission.
+                if current_event_count <= previous_event_count:
+                    continue
+
+                events = [
+                    timestamped.event
+                    for timestamped in window
+                ]
+
+                results[pid] = compute_features(
+                    events,
+                    self._common_extensions,
+                )
+
+                # Remember that these events have now been emitted.
+                self._last_emitted_event_count[pid] = (
+                    current_event_count
+                )
+
+        return results
+
+
+class RansomwareEventHandler(FileSystemEventHandler):
+    """
+    Converts watchdog filesystem events into FileEvents and feeds
+    them into the LiveAggregator.
+    """
+
+    def __init__(
+        self,
+        attributor: ProcessAttributor,
+        aggregator: LiveAggregator,
+        logger=None,
+        audit_reader=None,
+    ):
+        super().__init__()
+
+        self._attributor = attributor
+        self._aggregator = aggregator
+        self._logger = logger or get_logger("watcher")
+        self._audit_reader = audit_reader
+
+    def _handle(
+        self,
+        path: str,
+        event_type: EventType,
+        dest_path: str | None = None,
+    ):
+        pid = UNKNOWN_PID
+
+        if (
+            event_type == EventType.RENAMED
+            and dest_path
+            and self._audit_reader is not None
+        ):
+            pid = self._audit_reader.attribute_rename(
+                path,
+                dest_path,
+            )
+
+        if pid == UNKNOWN_PID:
+            pid = self._attributor.attribute(
+                dest_path or path
+            )
+
+        file_event = FileEvent(
+            path=path,
+            event_type=event_type,
+            dest_path=dest_path,
+            process_id=pid,
+        )
+
+        self._aggregator.handle_event(
+            pid,
+            file_event,
+        )
+
+        self._logger.info(
+            "event=%s path=%s dest=%s pid=%s",
+            event_type.value,
+            path,
+            dest_path,
+            pid,
+        )
+
+    def on_created(self, event):
+        if not event.is_directory:
+            self._handle(
+                event.src_path,
+                EventType.CREATED,
+            )
+
+    def on_modified(self, event):
+        if not event.is_directory:
+            self._handle(
+                event.src_path,
+                EventType.MODIFIED,
+            )
+
+    def on_deleted(self, event):
+        if not event.is_directory:
+            self._handle(
+                event.src_path,
+                EventType.DELETED,
+            )
+
+    def on_moved(self, event):
+        if not event.is_directory:
+            self._handle(
+                event.src_path,
+                EventType.RENAMED,
+                dest_path=event.dest_path,
+            )
+
+
+def start_monitor(
+    watched_directories: list[str],
+    common_extensions: list[str],
+    poll_interval_seconds: float = 1.0,
+    window_seconds: float = 10.0,
+    on_features: callable = None,
+    min_events: int = 1,
+    enable_audit_attribution: bool = False,
+) -> tuple[Observer, threading.Event]:
+    """
+    Start filesystem monitoring.
+
+    Args:
+        watched_directories:
+            Directories to monitor recursively.
+
+        common_extensions:
+            Extensions used by feature extraction.
+
+        poll_interval_seconds:
+            How frequently the rolling window is checked.
+
+        window_seconds:
+            Size of the behavioral observation window.
+
+        on_features:
+            Callback receiving:
+
+                on_features(pid, feature_vector)
+
+    Returns:
+        observer, stop_event
+    """
+
+    logger = get_logger("watcher")
+
+    attributor = ProcessAttributor(
+        refresh_interval_seconds=poll_interval_seconds,
+    )
+
+    # Use the seven-feature RanDS-compatible event aggregator.
+    aggregator = FilesystemAggregator(
+        window_seconds=window_seconds,
+        min_events=min_events,
+    )
+
+    audit_reader = (
+        AuditRenameReader()
+        if enable_audit_attribution
+        else None
+    )
+
+    handler = RansomwareEventHandler(
+        attributor,
+        aggregator,
+        logger=logger,
+        audit_reader=audit_reader,
+    )
+
+    observer = Observer()
+
+    for directory in watched_directories:
+        observer.schedule(
+            handler,
+            directory,
+            recursive=True,
+        )
+
+    observer.start()
+
+    if on_features is None:
+
+        def on_features(pid, feature_vector):
+            logger.info(
+                "pid=%s features=%s",
+                pid,
+                feature_vector,
+            )
+
+    stop_event = threading.Event()
+
+    def _poll_loop():
+
+        while not stop_event.is_set():
+
+            for pid, feature_vector in (
+                aggregator.poll().items()
+            ):
+
+                on_features(
+                    pid,
+                    feature_vector,
+                )
+
+            stop_event.wait(
+                poll_interval_seconds
+            )
+
+    threading.Thread(
+        target=_poll_loop,
+        daemon=True,
+    ).start()
+
+    logger.info(
+        "Started monitoring: %s",
+        watched_directories,
+    )
+
+    return observer, stop_event                                                                                

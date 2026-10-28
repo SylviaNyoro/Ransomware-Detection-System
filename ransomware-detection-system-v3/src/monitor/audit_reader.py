@@ -1,0 +1,205 @@
+"""Read recent Linux Audit rename records without modifying audit rules."""
+
+import subprocess
+import time
+
+from src.monitor.audit_attribution import (
+    match_rename_pid,
+    parse_audit_records,
+    parse_audit_creations,
+    parse_audit_modifications,
+    parse_audit_deletions,
+)
+
+
+class AuditRenameReader:
+    """Best-effort PID lookup for filesystem rename events."""
+
+    def __init__(
+        self,
+        audit_key="ransomware_demo",
+        timeout_seconds=0.5,
+        retry_seconds=0.05,
+        max_wait_seconds=0.3,
+    ):
+        self.audit_key = audit_key
+        self.timeout_seconds = timeout_seconds
+        self.retry_seconds = retry_seconds
+        self.max_wait_seconds = max_wait_seconds
+
+    def _read_operations(self, operation_type='rename'):
+        """Query recent records with a bounded subprocess timeout."""
+        try:
+            result = subprocess.run(
+                [
+                    "ausearch",
+                    "-k",
+                    self.audit_key,
+                    "-ts",
+                    "recent",
+                    "--raw",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=self.timeout_seconds,
+                check=False,
+            )
+        except (
+            FileNotFoundError,
+            subprocess.TimeoutExpired,
+            OSError,
+        ):
+            return []
+
+        if result.returncode != 0:
+            return []
+
+        if operation_type == "create":
+            return parse_audit_creations(result.stdout)
+
+        if operation_type == "delete":
+            return parse_audit_deletions(result.stdout)
+
+        if operation_type == "modify":
+            return parse_audit_modifications(result.stdout)
+
+        return parse_audit_records(result.stdout)
+
+    def attribute_rename(self, source_path, destination_path):
+        """Return the audit PID, or -1 if attribution is unavailable."""
+        if not source_path or not destination_path:
+            return -1
+
+        event_timestamp = time.time()
+        deadline = time.monotonic() + self.max_wait_seconds
+
+        while True:
+            operations = self._read_operations()
+
+            pid = match_rename_pid(
+                operations,
+                source_path,
+                destination_path,
+                event_timestamp=event_timestamp,
+                tolerance_seconds=2.0,
+            )
+
+            if pid != -1:
+                return pid
+
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                return -1
+
+            time.sleep(min(self.retry_seconds, remaining))
+
+
+    def attribute_creation(self, path):
+        """Return the PID for an audited creation, or -1 if unknown."""
+        import os
+
+        if not path:
+            return -1
+
+        normalized = os.path.normpath(os.path.abspath(path))
+        event_timestamp = time.time()
+        deadline = time.monotonic() + self.max_wait_seconds
+
+        while True:
+            operations = self._read_operations("create")
+
+            matches = [
+                operation
+                for operation in operations
+                if operation.source_path == normalized
+                and abs(operation.timestamp - event_timestamp) <= 2.0
+            ]
+
+            if len(matches) == 1:
+                return matches[0].pid
+
+            if len(matches) > 1:
+                return -1
+
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                return -1
+
+            time.sleep(min(self.retry_seconds, remaining))
+
+
+    def attribute_modification(self, path):
+        """Return PID for a verified audited write to an existing file."""
+        import os
+
+        if not path:
+            return -1
+
+        normalized = os.path.normpath(os.path.abspath(path))
+        event_timestamp = time.time()
+        deadline = time.monotonic() + self.max_wait_seconds
+
+        while True:
+            operations = self._read_operations("modify")
+
+            matches = [
+                operation
+                for operation in operations
+                if operation.source_path == normalized
+                and abs(operation.timestamp - event_timestamp) <= 2.0
+            ]
+
+            # Multiple writes by the same PID are acceptable.
+            pids = {operation.pid for operation in matches}
+
+            if len(pids) == 1:
+                return pids.pop()
+
+            if len(pids) > 1:
+                return -1
+
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                return -1
+
+            time.sleep(min(self.retry_seconds, remaining))
+
+
+    def attribute_deletion(self, path):
+        """Attribute a deletion using successful, recent audit records."""
+        import os
+
+        if not path:
+            return -1
+
+        normalized = os.path.normpath(os.path.abspath(path))
+        lookup_started = time.time()
+        deadline = time.monotonic() + self.max_wait_seconds
+
+        while True:
+            operations = self._read_operations("delete")
+
+            matches = [
+                operation
+                for operation in operations
+                if operation.source_path == normalized
+                and 0 <= lookup_started - operation.timestamp <= 10.0
+            ]
+
+            pids = {operation.pid for operation in matches}
+
+            if len(pids) == 1:
+                return pids.pop()
+
+            if len(pids) > 1:
+                return -1
+
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                return -1
+
+            time.sleep(min(self.retry_seconds, remaining))

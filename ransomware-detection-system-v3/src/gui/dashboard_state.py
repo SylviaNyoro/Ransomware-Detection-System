@@ -1,95 +1,206 @@
-"""
-Framework-independent state tracking for the dashboard (Ch. 4, GUI).
-
-Deliberately has NO dependency on tkinter or customtkinter, so it can be
-unit-tested in the plain Python 3.12 backend environment without needing
-the separate Python 3.14 GUI environment at all (see README.md's Step 6
-for why the GUI needs a separate environment). DashboardApp
-(dashboard.py) owns one DashboardState instance and updates its
-CustomTkinter widgets FROM it, rather than tracking counters/history/
-logs directly inside widget-coupled code.
-
-This mirrors the single "detection" message type the real backend
-(src/gui/backend.py) actually sends -- one combined message per
-classification, carrying prediction, confidence, action, pid and
-features together -- rather than separate messages per concern.
-"""
+"""Framework-independent state tracking for the ransomware dashboard."""
 
 from datetime import datetime
+import time
+
+
+def response_status(data):
+    """Distinguish proposed, executed and unsuccessful responses."""
+    action = str(data.get("action", "continue")).lower()
+    if data.get("response_executed", False):
+        return "EXECUTED"
+    if str(data.get("mode", "observe")).lower() == "observe":
+        return "PROPOSED"
+    if action == "continue":
+        return "CONTINUE"
+    return "NOT EXECUTED"
 
 
 class DashboardState:
-    """Tracks detection counters, session history, and log lines from
-    backend 'detection' messages, independent of any GUI framework."""
+    """Track classifications, proposed responses, and detection history."""
 
     def __init__(self, history_limit: int = 100):
         self.history_limit = history_limit
+
         self.counters = {
             "total": 0,
             "ransomware": 0,
+            "uncertain": 0,
             "goodware": 0,
             "continue": 0,
             "quarantine": 0,
             "terminate": 0,
         }
-        self.history: list[dict] = []
-        self.logs: list[str] = []
+
+        self.history = []
+        self.logs = []
+
         self.last_prediction = None
         self.last_confidence = 0.0
         self.last_pid = None
         self.last_action = None
-        self.last_features: dict = {}
-        self._reaction_times: list[float] = []
+        self.last_features = {}
+        self._reaction_times = []
+
+        # Track active incidents by PID.
+        self._active_incidents = {}
+        self._episode_gap_seconds = 10.0
 
     def record_detection(self, data: dict) -> str:
-        """Update counters/history/logs from one backend 'detection'
-        message (see src/gui/backend.py's send_message schema). Returns
-        the formatted log line, so DashboardApp can push it into the
-        Tkinter log box without duplicating the formatting logic."""
+        """Record a classification received from the detection backend."""
+
         prediction = data.get("prediction")
         confidence = float(data.get("confidence", 0.0))
-        action = str(data.get("action", "unknown")).lower()
+        outcome = data.get("outcome")
+
+        if outcome is None:
+            outcome = "Ransomware" if prediction == 1 else "Benign"
+
+        outcome = str(outcome).capitalize()
+
+        if outcome not in {"Benign", "Uncertain", "Ransomware"}:
+            raise ValueError(f"Invalid classification: {outcome}")
+
+        action = str(data.get("action", "continue")).lower()
+        executed = bool(data.get("response_executed", False))
         pid = data.get("pid")
         features = data.get("features", {})
         reaction_time_ms = data.get("reaction_time_ms")
 
-        self.last_prediction = prediction
-        self.last_confidence = confidence
-        self.last_pid = pid
-        self.last_action = action
-        self.last_features = features
 
-        self.counters["total"] += 1
-        self.counters["ransomware" if prediction == 1 else "goodware"] += 1
-        if action in self.counters:
-            self.counters[action] += 1
+        category = {
+            "Benign": "goodware",
+            "Uncertain": "uncertain",
+            "Ransomware": "ransomware",
+        }[outcome]
+
+        now = time.monotonic()
+        timestamp = datetime.now().strftime("%H:%M:%S")
+
+        display_pid = (
+            "Unknown" if pid is None or pid == -1 else str(pid)
+        )
+
+        action_status = response_status(data)
+
+        entry = {
+            "time": timestamp,
+            "pid": pid if pid is not None else -1,
+            "prediction": outcome.upper(),
+            "confidence": confidence,
+            "action": f"{action.upper()} ({action_status})",
+        }
+
+        # Remove expired incident references.
+        for active_pid, incident in list(self._active_incidents.items()):
+            if now - incident["last_seen"] > self._episode_gap_seconds:
+                del self._active_incidents[active_pid]
+
+        existing = (
+            self._active_incidents.get(pid)
+            if isinstance(pid, int) and pid > 0
+            else None
+        )
+
+        if existing is not None:
+            previous = existing["entry"]
+
+            previous_category = {
+                "BENIGN": "goodware",
+                "UNCERTAIN": "uncertain",
+                "RANSOMWARE": "ransomware",
+            }[previous["prediction"]]
+
+            previous_action = previous["action"].split(" ", 1)[0].lower()
+
+            if previous_category != category:
+                self.counters[previous_category] -= 1
+                self.counters[category] += 1
+
+            if previous_action != action:
+                if previous_action in {
+                    "continue", "quarantine", "terminate"
+                }:
+                    self.counters[previous_action] -= 1
+
+                if action in {
+                    "continue", "quarantine", "terminate"
+                }:
+                    self.counters[action] += 1
+
+            preserve_success = (
+                existing.get("executed", False)
+                and not executed
+                and previous_action == action
+            )
+
+            if not preserve_success:
+                previous.update(entry)
+                existing["executed"] = executed
+                existing["features"] = features
+
+            existing["last_seen"] = now
+
+        else:
+            self.counters["total"] += 1
+            self.counters[category] += 1
+
+            if action in {
+                "continue", "quarantine", "terminate"
+            }:
+                self.counters[action] += 1
+
+            self.history.append(entry)
+
+            if isinstance(pid, int) and pid > 0:
+                self._active_incidents[pid] = {
+                    "entry": entry,
+                    "last_seen": now,
+                    "executed": executed,
+                    "features": features,
+                }
+
+            self.history = self.history[-self.history_limit:]
+
+        displayed = (
+            self._active_incidents.get(pid, {}).get("entry", entry)
+            if isinstance(pid, int) and pid > 0
+            else entry
+        )
+
+        self.last_prediction = {
+            "RANSOMWARE": 1,
+            "BENIGN": 0,
+            "UNCERTAIN": None,
+        }.get(displayed["prediction"])
+        self.last_confidence = displayed["confidence"]
+        self.last_pid = displayed["pid"]
+        self.last_action = displayed["action"].split(" ", 1)[0].lower()
+        self.last_features = (
+            features if displayed is entry else
+            self._active_incidents[pid].get("features", {})
+        )
 
         if reaction_time_ms is not None:
             self._reaction_times.append(float(reaction_time_ms))
 
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        prediction_text = "RANSOMWARE" if prediction == 1 else "GOODWARE"
-        entry = {
-            "time": timestamp,
-            "pid": pid if pid is not None else "-",
-            "prediction": prediction_text,
-            "confidence": confidence,
-            "action": action.upper(),
-        }
-        self.history.append(entry)
-        if len(self.history) > self.history_limit:
-            self.history = self.history[-self.history_limit:]
-
         log_line = (
-            f"PID={pid} | prediction={prediction_text} | "
-            f"confidence={confidence * 100:.2f}% | action={action.upper()}"
+            f"PID={display_pid} | "
+            f"prediction={outcome.upper()} | "
+            f"ransomware_score={confidence * 100:.2f}% | "
+            f"action={action.upper()} ({action_status})"
         )
+
         self.logs.append(log_line)
         return log_line
 
     def reset_counters(self):
         for key in self.counters:
             self.counters[key] = 0
+
+        self._active_incidents.clear()
+        self.history.clear()
+        self._reaction_times.clear()
 
     @property
     def classifications(self) -> int:
@@ -103,4 +214,5 @@ class DashboardState:
     def average_reaction_ms(self) -> float:
         if not self._reaction_times:
             return 0.0
+
         return sum(self._reaction_times) / len(self._reaction_times)

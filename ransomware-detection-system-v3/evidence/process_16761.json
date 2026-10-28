@@ -1,0 +1,758 @@
+{
+  "pid": 16761,
+  "command": [
+    "/root/venv/bin/python",
+    "/root/ransomware-detection-system-v3/test_creation_deletion.py"
+  ],
+  "create_time": 1792934077.52,
+  "observations": [
+    {
+      "timestamp": "2026-10-25T13:14:38.362744+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:38.563894+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:38.764704+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:38.965761+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:39.167086+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:39.367682+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:39.568752+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:39.769113+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:39.970209+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:40.171343+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:40.372174+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:40.573830+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:40.776787+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:40.977800+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:41.178346+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:41.380276+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:41.581428+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:41.781974+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:41.982893+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:42.183594+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:42.385200+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:42.587651+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:42.792131+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:42.993230+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:43.194399+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:43.395072+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:43.596124+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:43.797028+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:43.998495+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:44.200560+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:44.403271+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:44.605183+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:44.806946+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:45.016362+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:45.217805+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:45.419142+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:45.623138+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:45.824741+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:46.025957+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:46.226742+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:46.427365+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:46.627869+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:46.829085+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:47.030009+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:47.230782+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:47.431454+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:47.632997+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:47.834041+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:48.036457+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:48.246718+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:48.448100+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:48.743421+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:48.945060+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:49.145543+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:49.347259+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:49.548832+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:49.749915+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:49.951203+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:50.152869+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:50.354435+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:50.555301+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:50.756173+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:50.956632+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:51.157810+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:51.362916+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:51.567504+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:51.768224+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:51.972780+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:52.173538+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:52.376015+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:52.579030+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:52.779969+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:52.998457+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:53.199093+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:53.402976+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:53.604195+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:53.805047+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:54.006845+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:54.208054+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:54.409533+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:54.610873+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:54.811928+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:55.015211+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:55.216062+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:55.417520+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:55.664082+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:55.865430+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:56.067522+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:56.268764+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:56.471653+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:56.674727+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:56.914127+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:57.116239+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:57.317417+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:57.554068+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:57.773772+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:57.975689+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:58.180164+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:58.382756+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:58.587964+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:58.789549+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:58.993082+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:59.197948+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:59.407036+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:59.650092+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:14:59.856624+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:00.057951+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:00.261301+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:00.465886+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:00.667820+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:00.868689+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:01.071621+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:01.273707+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:01.476007+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:01.676839+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:01.878217+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:02.080128+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:02.281020+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:02.482087+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:02.685665+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:02.887385+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:03.088564+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:03.290178+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:03.491834+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:03.700783+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:03.904862+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:04.141068+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:04.350271+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:04.552564+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:04.754066+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:04.959887+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:05.172501+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:05.374240+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:05.576094+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:05.779786+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:05.983075+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:06.188925+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:06.428689+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:06.631107+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:06.850637+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:07.052058+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:07.298492+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:07.501982+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:07.710510+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:07.911494+00:00",
+      "status": "stopped",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:08.112885+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:08.314677+00:00",
+      "status": "running",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:08.515393+00:00",
+      "status": "sleeping",
+      "running": true
+    },
+    {
+      "timestamp": "2026-10-25T13:15:08.716103+00:00",
+      "status": "sleeping",
+      "running": true
+    }
+  ],
+  "observed_running": true,
+  "observed_suspended": true,
+  "last_observed_status": "sleeping"
+}

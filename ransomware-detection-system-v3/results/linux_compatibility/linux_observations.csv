@@ -1,0 +1,2 @@
+timestamp,pid,changed_file_count,file_access_breadth,directory_traversal_breadth,file_creation_count,file_deletion_count,extension_diversity,file_activity_total
+1792784572.7721584,-1,30,20,2,20,5,2,60

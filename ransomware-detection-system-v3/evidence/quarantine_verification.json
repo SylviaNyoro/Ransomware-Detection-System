@@ -1,0 +1,14 @@
+{
+  "pid": 16493,
+  "classification": "Uncertain",
+  "confidence": 0.5285904892968193,
+  "action": "quarantine",
+  "mode": "enforce",
+  "authorized": true,
+  "response_executed": true,
+  "enforcement_status": "suspended_verified",
+  "suspension_observed": true,
+  "recovery_observed": true,
+  "observed_suspension_duration_seconds": 15.219,
+  "verified": true
+}

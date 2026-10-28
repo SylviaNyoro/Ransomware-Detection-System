@@ -1,0 +1,412 @@
+{
+  "captured_at_utc": "2026-10-25T14:23:43.767458+00:00",
+  "purpose": "TERMINATE pre-execution integrity baseline",
+  "demo_files": {
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_00.txt": {
+      "sha256": "ba5da5d74fd2f81604786719ed7c6d2b6eabd1c05f202ac1011e0973663ed45e",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_01.csv": {
+      "sha256": "43af07ef21f08abd77c196932dd7def4899bf480deda7fa2bc87b68f3c20e051",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_02.json": {
+      "sha256": "8051c98a0a80834e03e791d3f593b28190a93a106991df22db8be92b4ac2f1d1",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_03.log": {
+      "sha256": "4763e9536af9ef707ccdef718919a9bfe8f62215a2d587f1d6faa0376e612efe",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_04.md": {
+      "sha256": "7270e64a2043f48f92dac42899b5258f3fbb44aa0bfeda68002697973e0f1cc6",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_05.xml": {
+      "sha256": "f297acaafc6dad127cdb060596bbdacec3c321fc28158fc7a46f68fa4ba60281",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_06.ini": {
+      "sha256": "85c2a08005409071dcac0132d23f36322f3187a5a9daaebdacb12ef5a5b0d866",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_00/sample_07.cfg": {
+      "sha256": "5b1fd61bea272fe7c944d45d2162a5f6f70ef9b1935158f5f21f0c2c3693b282",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_00.txt": {
+      "sha256": "ba5da5d74fd2f81604786719ed7c6d2b6eabd1c05f202ac1011e0973663ed45e",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_01.csv": {
+      "sha256": "43af07ef21f08abd77c196932dd7def4899bf480deda7fa2bc87b68f3c20e051",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_02.json": {
+      "sha256": "8051c98a0a80834e03e791d3f593b28190a93a106991df22db8be92b4ac2f1d1",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_03.log": {
+      "sha256": "4763e9536af9ef707ccdef718919a9bfe8f62215a2d587f1d6faa0376e612efe",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_04.md": {
+      "sha256": "7270e64a2043f48f92dac42899b5258f3fbb44aa0bfeda68002697973e0f1cc6",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_05.xml": {
+      "sha256": "f297acaafc6dad127cdb060596bbdacec3c321fc28158fc7a46f68fa4ba60281",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_06.ini": {
+      "sha256": "85c2a08005409071dcac0132d23f36322f3187a5a9daaebdacb12ef5a5b0d866",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_01/sample_07.cfg": {
+      "sha256": "5b1fd61bea272fe7c944d45d2162a5f6f70ef9b1935158f5f21f0c2c3693b282",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_00.txt": {
+      "sha256": "ba5da5d74fd2f81604786719ed7c6d2b6eabd1c05f202ac1011e0973663ed45e",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_01.csv": {
+      "sha256": "43af07ef21f08abd77c196932dd7def4899bf480deda7fa2bc87b68f3c20e051",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_02.json": {
+      "sha256": "8051c98a0a80834e03e791d3f593b28190a93a106991df22db8be92b4ac2f1d1",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_03.log": {
+      "sha256": "4763e9536af9ef707ccdef718919a9bfe8f62215a2d587f1d6faa0376e612efe",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_04.md": {
+      "sha256": "7270e64a2043f48f92dac42899b5258f3fbb44aa0bfeda68002697973e0f1cc6",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_05.xml": {
+      "sha256": "f297acaafc6dad127cdb060596bbdacec3c321fc28158fc7a46f68fa4ba60281",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_06.ini": {
+      "sha256": "85c2a08005409071dcac0132d23f36322f3187a5a9daaebdacb12ef5a5b0d866",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_02/sample_07.cfg": {
+      "sha256": "5b1fd61bea272fe7c944d45d2162a5f6f70ef9b1935158f5f21f0c2c3693b282",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_00.txt": {
+      "sha256": "ba5da5d74fd2f81604786719ed7c6d2b6eabd1c05f202ac1011e0973663ed45e",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_01.csv": {
+      "sha256": "43af07ef21f08abd77c196932dd7def4899bf480deda7fa2bc87b68f3c20e051",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_02.json": {
+      "sha256": "8051c98a0a80834e03e791d3f593b28190a93a106991df22db8be92b4ac2f1d1",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_03.log": {
+      "sha256": "4763e9536af9ef707ccdef718919a9bfe8f62215a2d587f1d6faa0376e612efe",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_04.md": {
+      "sha256": "7270e64a2043f48f92dac42899b5258f3fbb44aa0bfeda68002697973e0f1cc6",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_05.xml": {
+      "sha256": "f297acaafc6dad127cdb060596bbdacec3c321fc28158fc7a46f68fa4ba60281",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_06.ini": {
+      "sha256": "85c2a08005409071dcac0132d23f36322f3187a5a9daaebdacb12ef5a5b0d866",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_03/sample_07.cfg": {
+      "sha256": "5b1fd61bea272fe7c944d45d2162a5f6f70ef9b1935158f5f21f0c2c3693b282",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_00.txt": {
+      "sha256": "ba5da5d74fd2f81604786719ed7c6d2b6eabd1c05f202ac1011e0973663ed45e",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_01.csv": {
+      "sha256": "43af07ef21f08abd77c196932dd7def4899bf480deda7fa2bc87b68f3c20e051",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_02.json": {
+      "sha256": "8051c98a0a80834e03e791d3f593b28190a93a106991df22db8be92b4ac2f1d1",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_03.log": {
+      "sha256": "4763e9536af9ef707ccdef718919a9bfe8f62215a2d587f1d6faa0376e612efe",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_04.md": {
+      "sha256": "7270e64a2043f48f92dac42899b5258f3fbb44aa0bfeda68002697973e0f1cc6",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_05.xml": {
+      "sha256": "f297acaafc6dad127cdb060596bbdacec3c321fc28158fc7a46f68fa4ba60281",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_06.ini": {
+      "sha256": "85c2a08005409071dcac0132d23f36322f3187a5a9daaebdacb12ef5a5b0d866",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_04/sample_07.cfg": {
+      "sha256": "5b1fd61bea272fe7c944d45d2162a5f6f70ef9b1935158f5f21f0c2c3693b282",
+      "size": 156
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_00.txt": {
+      "sha256": "5f477b8d81206f17d735cf0eb591ffe9fd22dcbd25622f8afb1e9c3309c30f05",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_01.csv": {
+      "sha256": "90b0e90ec8ba65bd222a6cdf39e1ab941edf0b94bb88f40ffbc1489584c10466",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_02.json": {
+      "sha256": "12712a8186866744bdc39e07b4ebb697ab28fc29be0ddff048d9deeccd24e561",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_03.log": {
+      "sha256": "7b9e5db0d903c1dfa37ff6b305347fb72a145e7c707bbebed173fa6cdfee0648",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_04.md": {
+      "sha256": "2a1ee7013dbb3b65204789513b10e6dc4514c296658bfb123e2bf828be2945ba",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_05.xml": {
+      "sha256": "0617e481bf16f361bb3be058381867c8d5def1b835dd0e4de409805a83682f04",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_06.ini": {
+      "sha256": "c8d1a116d9727195e3abc78c2a555ecaf3dd3f5eea14bb348d48d2abf53f5d9f",
+      "size": 135
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_05/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_06/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_07/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_08/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_09/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_10/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_00.txt": {
+      "sha256": "ce22d544178d1a327541fbc984ad04eeda42bdf0098a3fd8a8f9ff36524461c3",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_01.csv": {
+      "sha256": "0b2eef0f1cddb1836ce633d657b1aa6e49a243f9adcb2baa214d79e21e9e681f",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_02.json": {
+      "sha256": "4c5f1826ce31158b01a6c750dadcb3e69a0e51898df6b002b1362c40bd16f1ac",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_03.log": {
+      "sha256": "3d0fe2cb8351e85e7c21740ac39e9e878019823dd42d05a6afb78088aef80448",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_04.md": {
+      "sha256": "8e5ab91f8049800986a1cb0ad826b070715d9534cf31d0eb9720addc5273f853",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_05.xml": {
+      "sha256": "c68b90cb18abd93af8c34b5cb10ecf3e8af3ccaad79098665989610ce75ddea7",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_06.ini": {
+      "sha256": "1a3573fad1439db22209ddf16c3201fd503fc0f4c5a5f738b330d36a26674e50",
+      "size": 114
+    },
+    "data/decoy/final_ransomware_classification_demo/folder_11/sample_07.cfg": {
+      "sha256": "a0a2683ef606c179a696260dad5ea78aca115f7ff70242ddcf34e0cdac3bea81",
+      "size": 114
+    }
+  },
+  "control_files": {
+    "data/decoy/terminate_integrity_controls/control_00.txt": {
+      "sha256": "b6356a3987cff95032e4a14c404da067662412defeddcd502dc5222daf2fb89f",
+      "size": 31
+    },
+    "data/decoy/terminate_integrity_controls/control_01.txt": {
+      "sha256": "b7a2b91b952864440179ee1e425658def2095ac38fc5fe08478a06a65e1b728a",
+      "size": 31
+    },
+    "data/decoy/terminate_integrity_controls/control_02.txt": {
+      "sha256": "09ff72f5d01c86d9a2e9ea9cf12b01eac55713776f37c1bd9c296e12d4f5c5cc",
+      "size": 31
+    },
+    "data/decoy/terminate_integrity_controls/control_03.txt": {
+      "sha256": "0e9a4dbf84c98e841d014d8099c5ffbbf671ad2331c7275d7684f2cf58ee3dfc",
+      "size": 31
+    },
+    "data/decoy/terminate_integrity_controls/control_04.txt": {
+      "sha256": "bb499e515247a4e8e9244a63ffe25c4e810ae686736110510387850ad4c82913",
+      "size": 31
+    }
+  }
+}

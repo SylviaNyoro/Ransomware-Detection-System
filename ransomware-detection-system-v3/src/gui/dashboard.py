@@ -48,8 +48,8 @@ class DashboardApp(ctk.CTk):
 
         self.title("Enterprise Ransomware Detection System")
         # Extra vertical space keeps all three behavioral feature rows visible.
-        self.geometry("1250x1050")
-        self.minsize(1050, 950)
+        self.geometry("1250x850")
+        self.minsize(950, 650)
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
@@ -60,6 +60,9 @@ class DashboardApp(ctk.CTk):
         self.current_mode = "observe"
 
         self.app_state = DashboardState()
+        self.alerted_actions = set()
+        self.alert_queue = []
+        self.active_alert = None
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.build_interface()
@@ -73,11 +76,19 @@ class DashboardApp(ctk.CTk):
 
     def build_interface(self):
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.page = ctk.CTkScrollableFrame(
+            self,
+            fg_color="transparent",
+            corner_radius=0,
+        )
+        self.page.grid(row=0, column=0, sticky="nsew")
+        self.page.grid_columnconfigure(0, weight=1)
 
         # Header
-        header = ctk.CTkFrame(self, corner_radius=12)
-        header.grid(row=0, column=0, padx=20, pady=(20, 8), sticky="ew")
+        header = ctk.CTkFrame(self.page, corner_radius=12)
+        header.grid(row=0, column=0, padx=12, pady=(10, 5), sticky="ew")
         header.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
@@ -93,8 +104,8 @@ class DashboardApp(ctk.CTk):
         ).grid(row=1, column=0, padx=20, pady=(0, 14), sticky="w")
 
         # Monitoring status
-        status_frame = ctk.CTkFrame(self, corner_radius=12)
-        status_frame.grid(row=1, column=0, padx=20, pady=8, sticky="ew")
+        status_frame = ctk.CTkFrame(self.page, corner_radius=12)
+        status_frame.grid(row=1, column=0, padx=12, pady=5, sticky="ew")
         status_frame.grid_columnconfigure(1, weight=1)
 
         ctk.CTkLabel(
@@ -135,19 +146,20 @@ class DashboardApp(ctk.CTk):
         self.stop_button.grid(row=0, column=4, padx=(0, 20), pady=13)
 
         # Counters
-        counters_frame = ctk.CTkFrame(self, corner_radius=12)
-        counters_frame.grid(row=2, column=0, padx=20, pady=8, sticky="ew")
+        counters_frame = ctk.CTkFrame(self.page, corner_radius=12)
+        counters_frame.grid(row=2, column=0, padx=12, pady=5, sticky="ew")
 
-        for column in range(6):
+        for column in range(7):
             counters_frame.grid_columnconfigure(column, weight=1)
 
         counter_specs = [
             ("total", "TOTAL DETECTIONS"),
             ("ransomware", "RANSOMWARE"),
-            ("goodware", "GOODWARE"),
+            ("uncertain", "UNCERTAIN"),
+            ("goodware", "BENIGN"),
             ("continue", "CONTINUE"),
-            ("quarantine", "QUARANTINE"),
-            ("terminate", "TERMINATE"),
+            ("quarantine", "PROPOSED QUARANTINE"),
+            ("terminate", "PROPOSED TERMINATE"),
         ]
 
         self.counter_labels = {}
@@ -165,7 +177,7 @@ class DashboardApp(ctk.CTk):
             ctk.CTkLabel(
                 card,
                 text=title,
-                font=ctk.CTkFont(size=10, weight="bold"),
+                font=ctk.CTkFont(size=9, weight="bold"),
             ).pack(pady=(10, 2))
 
             value = ctk.CTkLabel(
@@ -177,8 +189,8 @@ class DashboardApp(ctk.CTk):
             self.counter_labels[key] = value
 
         # Main content
-        content = ctk.CTkFrame(self, fg_color="transparent")
-        content.grid(row=3, column=0, padx=20, pady=8, sticky="ew")
+        content = ctk.CTkFrame(self.page, fg_color="transparent")
+        content.grid(row=3, column=0, padx=12, pady=5, sticky="ew")
         content.grid_columnconfigure(0, weight=1)
         content.grid_columnconfigure(1, weight=1)
 
@@ -250,20 +262,20 @@ class DashboardApp(ctk.CTk):
         self.threshold_label.pack(anchor="w", padx=20, pady=(3, 12))
 
         # Lower content area
-        lower = ctk.CTkFrame(self, fg_color="transparent")
-        lower.grid(row=4, column=0, padx=20, pady=8, sticky="nsew")
+        lower = ctk.CTkFrame(self.page, fg_color="transparent")
+        lower.grid(row=4, column=0, padx=12, pady=5, sticky="nsew")
         lower.grid_columnconfigure(0, weight=1)
         lower.grid_columnconfigure(1, weight=1)
         # Reserve enough height for the feature panel and its three rows,
         # while keeping the detection history comfortably visible.
-        lower.grid_rowconfigure(0, weight=3, minsize=205)
-        lower.grid_rowconfigure(1, weight=2, minsize=180)
+        lower.grid_rowconfigure(0, weight=1, minsize=280)
+        lower.grid_rowconfigure(1, weight=1, minsize=150)
 
         # Behavioral features
         features_frame = ctk.CTkFrame(lower, corner_radius=12)
         features_frame.grid(row=0, column=0, padx=(0, 8), pady=(0, 8), sticky="nsew")
         features_frame.grid_columnconfigure(1, weight=1)
-        features_frame.grid_rowconfigure(3, weight=1)
+        features_frame.grid_rowconfigure(7, weight=1)
 
         ctk.CTkLabel(
             features_frame,
@@ -271,15 +283,22 @@ class DashboardApp(ctk.CTk):
             font=ctk.CTkFont(size=18, weight="bold"),
         ).grid(row=0, column=0, columnspan=2, padx=20, pady=(14, 10), sticky="w")
 
-        self.modification_label = self.add_feature_row(
-            features_frame, 1, "Modification Frequency"
-        )
-        self.extension_label = self.add_feature_row(
-            features_frame, 2, "Extension Change Rate"
-        )
-        self.breadth_label = self.add_feature_row(
-            features_frame, 3, "File Access Breadth"
-        )
+        self.feature_labels = {}
+
+        feature_specs = [
+            ("changed_file_count", "Changed Files"),
+            ("file_access_breadth", "File Access Breadth (Proxy)"),
+            ("directory_traversal_breadth", "Directory Breadth"),
+            ("file_creation_count", "Created Files"),
+            ("file_deletion_count", "Deleted Files"),
+            ("extension_diversity", "Extension Diversity"),
+            ("file_activity_total", "Total File Activity"),
+        ]
+
+        for row_index, (key, title) in enumerate(feature_specs, start=1):
+            self.feature_labels[key] = self.add_feature_row(
+                features_frame, row_index, title
+            )
 
         # System log
         log_frame = ctk.CTkFrame(lower, corner_radius=12)
@@ -323,7 +342,7 @@ class DashboardApp(ctk.CTk):
 
         # Footer
         ctk.CTkLabel(
-            self,
+            self.page,
             text="Random Forest behavioral detection | 10-second rolling observation window",
             font=ctk.CTkFont(size=11),
         ).grid(row=5, column=0, padx=20, pady=(3, 12))
@@ -337,14 +356,14 @@ class DashboardApp(ctk.CTk):
             parent,
             text=name,
             font=ctk.CTkFont(size=14),
-        ).grid(row=row, column=0, padx=20, pady=8, sticky="w")
+        ).grid(row=row, column=0, padx=12, pady=4, sticky="w")
 
         value_label = ctk.CTkLabel(
             parent,
             text="0",
             font=ctk.CTkFont(size=16, weight="bold"),
         )
-        value_label.grid(row=row, column=1, padx=20, pady=8, sticky="e")
+        value_label.grid(row=row, column=1, padx=12, pady=4, sticky="e")
         return value_label
 
     # -----------------------------------------------------------------
@@ -526,15 +545,10 @@ class DashboardApp(ctk.CTk):
                     text="Watched directory: " + ", ".join(directories)
                 )
 
-            quarantine = message.get("quarantine_threshold")
-            terminate = message.get("terminate_threshold")
-            if quarantine is not None and terminate is not None:
-                self.threshold_label.configure(
-                    text=(
-                        f"Thresholds: Quarantine {quarantine * 100:.0f}% | "
-                        f"Terminate {terminate * 100:.0f}%"
-                    )
-                )
+            self.threshold_label.configure(
+                text="Classification: Benign <20% | Uncertain 20–62.5% | "
+                     "Ransomware ≥62.5%"
+            )
 
             self.log_message(
                 message.get("message", "Monitoring active.")
@@ -560,13 +574,30 @@ class DashboardApp(ctk.CTk):
         # framework-independent DashboardState, then just render it.
         log_line = self.app_state.record_detection(data)
 
-        prediction_text = "RANSOMWARE" if prediction == 1 else "GOODWARE"
+        prediction_text = str(
+            data.get(
+                "outcome",
+                "Ransomware" if prediction == 1 else "Benign",
+            )
+        ).upper()
 
+        from src.gui.dashboard_state import response_status
+
+        current_entry = self.app_state.history[-1]
+        if current_entry["pid"] == pid:
+            confidence = current_entry["confidence"]
+            prediction_text = current_entry["prediction"]
+            action_display = current_entry["action"]
+            features = self.app_state.last_features
+        else:
+            action_display = f"{str(action).upper()} ({response_status(data)})"
         self.prediction_label.configure(text=prediction_text)
         self.confidence_label.configure(
             text=f"Confidence: {confidence * 100:.2f}%"
         )
-        self.action_label.configure(text=f"Action: {str(action).upper()}")
+        self.action_label.configure(
+            text=f"Action: {action_display}"
+        )
 
         self.pid_label.configure(
             text="PID: Unknown" if pid == -1 else f"PID: {pid}"
@@ -575,21 +606,134 @@ class DashboardApp(ctk.CTk):
         self.mode_detail_label.configure(text=f"Response mode: {mode}")
         self.mode_label.configure(text=f"Mode: {mode.upper()}")
 
-        # Read the three shared feature names emitted by the live backend.
-        # Use an em dash if a field was not supplied instead of implying it is 0.
-        self.modification_label.configure(
-            text=self.format_feature(features, "modification_frequency")
-        )
-        self.extension_label.configure(
-            text=self.format_feature(features, "extension_change_rate")
-        )
-        self.breadth_label.configure(
-            text=self.format_feature(features, "file_access_breadth")
-        )
+        # Display all seven features from the RanDS model.
+        for key, label in self.feature_labels.items():
+            label.configure(
+                text=self.format_feature(features, key)
+            )
 
         self.update_counter_labels()
         self.refresh_history()
         self.log_message(log_line)
+        self.show_security_alert(data)
+
+
+    def show_security_alert(self, data):
+        """Queue one security notification per PID and selected action."""
+        action = str(data.get("action", "")).lower()
+        pid = data.get("pid")
+
+        if action not in {"quarantine", "terminate"}:
+            return
+
+        if pid is None:
+            return
+
+        key = (pid, action)
+
+        if key in self.alerted_actions:
+            return
+
+        self.alerted_actions.add(key)
+        self.alert_queue.append(dict(data))
+        self.display_next_security_alert()
+
+    def display_next_security_alert(self):
+        """Show queued alerts without opening overlapping windows."""
+        if self.active_alert is not None:
+            try:
+                if self.active_alert.winfo_exists():
+                    return
+            except Exception:
+                pass
+
+        if not self.alert_queue:
+            return
+
+        data = self.alert_queue.pop(0)
+
+        action = str(data.get("action", "")).lower()
+        pid = data.get("pid")
+        score = float(data.get("confidence", 0.0))
+        mode = str(data.get("mode", "observe")).upper()
+        executed = bool(data.get("response_executed", False))
+        status = str(data.get("enforcement_status", "unknown"))
+
+        alert = ctk.CTkToplevel(self)
+        self.active_alert = alert
+
+        alert.title("Ransomware Detection Alert")
+        alert.geometry("500x420")
+        alert.resizable(False, False)
+        alert.attributes("-topmost", True)
+
+        def dismiss():
+            self.active_alert = None
+            alert.destroy()
+            self.after(100, self.display_next_security_alert)
+
+        def view_dashboard():
+            dismiss()
+            self.deiconify()
+            self.lift()
+            self.focus_force()
+
+        alert.protocol("WM_DELETE_WINDOW", dismiss)
+
+        color = (
+            "#ff5555" if action == "terminate"
+            else "#ffb347"
+        )
+
+        ctk.CTkLabel(
+            alert,
+            text="SECURITY ALERT",
+            font=ctk.CTkFont(size=24, weight="bold"),
+            text_color=color,
+        ).pack(pady=(20, 10))
+
+        ctk.CTkLabel(
+            alert,
+            text="Suspicious filesystem activity detected",
+            font=ctk.CTkFont(size=15),
+        ).pack(pady=(0, 15))
+
+        details = (
+            f"Process ID: {pid}\n"
+            f"Ransomware score: {score:.2%}\n"
+            f"Selected action: {action.upper()}\n"
+            f"Response mode: {mode}\n"
+            f"Enforcement executed: {'YES' if executed else 'NO'}\n"
+            f"Enforcement status: {status}"
+        )
+
+        ctk.CTkLabel(
+            alert,
+            text=details,
+            font=ctk.CTkFont(size=14),
+            justify="left",
+            anchor="w",
+            wraplength=450,
+        ).pack(padx=20, pady=10, fill="x")
+
+        ctk.CTkButton(
+            alert,
+            text="View Dashboard",
+            command=view_dashboard,
+            width=220,
+        ).pack(pady=(12, 8))
+
+        ctk.CTkButton(
+            alert,
+            text="Dismiss",
+            command=dismiss,
+            width=220,
+            fg_color="gray35",
+            hover_color="gray25",
+        ).pack(pady=4)
+
+        alert.after(100, alert.lift)
+        alert.after(150, alert.focus_force)
 
     @staticmethod
     def format_feature(features, key):

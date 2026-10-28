@@ -1,0 +1,52 @@
+"""Controlled response decisions for authorized demonstrations."""
+
+from src.response.demo_authorization import is_authorized_demo
+
+
+class EnforcementController:
+    """Track response decisions for demonstration processes."""
+
+    def __init__(
+        self,
+        quarantine_threshold=0.50,
+        terminate_threshold=0.85,
+    ):
+        if not 0 <= quarantine_threshold < terminate_threshold <= 1:
+            raise ValueError("Invalid response thresholds")
+
+        self.quarantine_threshold = quarantine_threshold
+        self.terminate_threshold = terminate_threshold
+        self.handled = set()
+
+    def evaluate(self, pid, confidence, mode="observe"):
+        """Determine the response without modifying any process."""
+
+        if not 0 <= confidence <= 1:
+            raise ValueError("Invalid confidence")
+
+        if mode not in {"observe", "enforce"}:
+            raise ValueError("Invalid response mode")
+
+        if confidence < self.quarantine_threshold:
+            action = "continue"
+        elif confidence < self.terminate_threshold:
+            action = "quarantine"
+        else:
+            action = "terminate"
+
+        authorized = is_authorized_demo(pid)
+
+        return {
+            "pid": pid,
+            "action": action,
+            "mode": mode,
+            "authorized": authorized,
+            "response_executed": False,
+            "status": (
+                "continue"
+                if action == "continue"
+                else "pending_authorization"
+                if not authorized
+                else "ready_for_verification"
+            ),
+        }

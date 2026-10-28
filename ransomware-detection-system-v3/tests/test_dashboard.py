@@ -63,7 +63,7 @@ def test_record_detection_appends_to_history_and_logs():
     entry = state.history[0]
     assert entry["pid"] == 42
     assert entry["prediction"] == "RANSOMWARE"
-    assert entry["action"] == "TERMINATE"
+    assert entry["action"] == "TERMINATE (PROPOSED)"
 
     assert len(state.logs) == 1
     assert "PID=42" in state.logs[0]
@@ -81,9 +81,9 @@ def test_history_is_capped_at_history_limit():
 
 def test_classifications_and_threats_properties():
     state = DashboardState()
-    state.record_detection(_detection(prediction=1))
-    state.record_detection(_detection(prediction=0))
-    state.record_detection(_detection(prediction=1))
+    state.record_detection(_detection(prediction=1, pid=101))
+    state.record_detection(_detection(prediction=0, pid=102))
+    state.record_detection(_detection(prediction=1, pid=103))
 
     assert state.classifications == 3
     assert state.threats == 2
@@ -109,4 +109,20 @@ def test_reset_counters():
 
     state.reset_counters()
     assert all(v == 0 for v in state.counters.values())
+    assert len(state.history) == 0
+
+
+
+def test_repeated_pid_updates_existing_incident():
+    state = DashboardState()
+
+    state.record_detection(_detection(pid=42, prediction=0, action="continue"))
+    state.record_detection(_detection(pid=42, prediction=1, action="terminate"))
+
+    assert state.classifications == 1
+    assert state.threats == 1
+    assert state.counters["goodware"] == 0
+    assert state.counters["continue"] == 0
+    assert state.counters["terminate"] == 1
     assert len(state.history) == 1
+    assert state.history[0]["prediction"] == "RANSOMWARE"

@@ -1,0 +1,10 @@
+﻿__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+.env
+logs/
+data/decoy/
+data/demo_authorization/
+data/external/rands/RanDS_Behaviour_Activity_Dataset.zip

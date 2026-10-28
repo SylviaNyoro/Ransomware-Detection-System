@@ -1,0 +1,161 @@
+"""
+Detection backend for the Enterprise Ransomware Detection System GUI.
+
+Runs the live ransomware detection pipeline in a separate process
+from the dashboard.
+
+Communication with the dashboard uses JSON Lines through stdout.
+"""
+
+import json
+import os
+import sys
+import time
+
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..")
+)
+
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from src.live_detection import create_live_detector, load_config
+from src.monitor.watcher import start_monitor
+
+
+def send_message(message: dict):
+    """Send one JSON message to the dashboard."""
+    print(json.dumps(message), flush=True)
+
+
+def main():
+    send_message({
+        "type": "status",
+        "status": "starting",
+        "message": "Detection backend starting...",
+    })
+
+    config_path = os.path.join(PROJECT_ROOT, "config.yaml")
+
+    try:
+        config = load_config(config_path)
+
+        send_message({
+            "type": "status",
+            "status": "starting",
+            "message": "Preparing detection backend...",
+        })
+
+        detector = create_live_detector(config)
+
+        monitor_config = config["monitor"]
+        feature_config = config["features"]
+
+        watched_directories = [
+            os.path.join(PROJECT_ROOT, directory)
+            if not os.path.isabs(directory)
+            else directory
+            for directory in monitor_config["watched_directories"]
+        ]
+
+        poll_interval = monitor_config.get(
+            "poll_interval_seconds",
+            1.0,
+        )
+
+        window_seconds = monitor_config.get(
+            "window_seconds",
+            10.0,
+        )
+
+        common_extensions = feature_config["common_extensions"]
+
+        send_message({
+            "type": "status",
+            "status": "running",
+            "message": "Detection backend is monitoring.",
+            "mode": detector.response_mode,
+            "directories": watched_directories,
+            "quarantine_threshold": detector.quarantine_threshold,
+            "terminate_threshold": detector.terminate_threshold,
+        })
+
+        def on_features(pid, features):
+            try:
+                result = detector.on_features(pid, features)
+
+                if hasattr(features, "as_dict"):
+                    feature_data = features.as_dict()
+                elif isinstance(features, dict):
+                    feature_data = features
+                else:
+                    feature_data = {}
+
+                send_message({
+                    "type": "detection",
+                    "data": {
+                        "pid": result["pid"],
+                        "prediction": result["prediction"],
+                        "outcome": result["outcome"],
+                        "confidence": result["confidence"],
+                        "action": result["action"],
+                        "mode": result["mode"],
+                        "response_executed": result["response_executed"],
+                        "features": feature_data,
+                    },
+                })
+
+                action = result["action"]
+                conf = result["confidence"]
+                outcome = result["outcome"].upper()
+                pid_val = result["pid"]
+
+                log_line = (
+                    f"OBSERVED | {outcome} | "
+                    f"ransomware_score={conf:.1%} | "
+                    f"PID={pid_val} | "
+                    f"proposed_action={action.upper()} | "
+                    f"response_executed=False"
+                )
+                send_message({"type": "log", "message": log_line})
+
+            except Exception as exc:
+                send_message({
+                    "type": "error",
+                    "message": f"Detection error: {exc}",
+                })
+
+        observer, stop_event = start_monitor(
+            watched_directories=watched_directories,
+            common_extensions=common_extensions,
+            poll_interval_seconds=poll_interval,
+            window_seconds=window_seconds,
+            on_features=on_features,
+            min_events=monitor_config.get("min_events", 1),
+        )
+
+        try:
+            while not stop_event.is_set():
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            stop_event.set()
+            observer.stop()
+            observer.join(timeout=5)
+            send_message({
+                "type": "status",
+                "status": "stopped",
+                "message": "Detection backend stopped.",
+            })
+
+    except Exception as exc:
+        send_message({
+            "type": "error",
+            "message": str(exc),
+        })
+        raise
+
+
+if __name__ == "__main__":
+    main()

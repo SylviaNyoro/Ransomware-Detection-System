@@ -1,0 +1,17 @@
+{
+  "threshold": 0.625,
+  "test_samples": 9999,
+  "accuracy": 0.8698869886988699,
+  "precision": 0.9623498864005193,
+  "recall": 0.8472638948421203,
+  "f1_score": 0.9011473292303016,
+  "roc_auc": 0.9586224460637235,
+  "false_positive_rate": 0.07733333333333334,
+  "false_negative_rate": 0.1527361051578797,
+  "confusion_matrix": {
+    "tn": 2768,
+    "fp": 232,
+    "fn": 1069,
+    "tp": 5930
+  }
+}

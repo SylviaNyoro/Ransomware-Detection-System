@@ -1,9 +1,15 @@
-venv/
-.venv/
+﻿# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
+venv/
+.venv/
 .env
-.env.*
-data/decoy/*
-!data/decoy/.gitkeep
+
+# Runtime files
+logs/
+data/decoy/
+data/demo_authorization/
+
+# Original dataset exceeds GitHub's file size limit
+data/external/rands/RanDS_Behaviour_Activity_Dataset.zip

@@ -1,0 +1,28 @@
+{
+  "pid": 22418,
+  "result": "PASS",
+  "checks": {
+    "matching_pid": true,
+    "quarantine_decision_verified": true,
+    "process_running_observed": true,
+    "process_suspension_observed": true,
+    "process_recovery_observed": true,
+    "all_seven_features_present": true
+  },
+  "classification": "Uncertain",
+  "confidence": 0.5991547619047617,
+  "action": "quarantine",
+  "enforcement_status": "suspended_verified",
+  "features": {
+    "changed_file_count": 24,
+    "file_access_breadth": 12,
+    "directory_traversal_breadth": 3,
+    "file_creation_count": 12,
+    "file_deletion_count": 12,
+    "extension_diversity": 3,
+    "file_activity_total": 48
+  },
+  "observation_count": 164,
+  "suspension_observed": true,
+  "recovery_observed": true
+}

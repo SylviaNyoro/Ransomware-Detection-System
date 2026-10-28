@@ -1,14 +1,11 @@
 """
-Manual demo for the live monitor (Step 4). Run this, then create/edit/
-rename files in the watched directory in another terminal and watch
-feature vectors appear here in real time.
+Manual demonstration of the seven-feature Linux filesystem monitor.
 
-Usage:
-    mkdir -p data/decoy
-    python -m scripts.demo_monitor
-    # in another terminal: touch data/decoy/test.txt && mv data/decoy/test.txt data/decoy/test.locked
+Displays observed filesystem features without running predictions
+or taking any response actions.
 """
 
+import os
 import signal
 import time
 
@@ -18,39 +15,53 @@ from src.monitor.watcher import start_monitor
 
 
 def main():
-    with open("config.yaml") as f:
+    with open("config.yaml", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
-    watched = cfg["monitor"]["watched_directories"]
-    common_ext = cfg["features"]["common_extensions"]
-    poll_interval = cfg["monitor"]["poll_interval_seconds"]
+    monitor_cfg = cfg["monitor"]
 
-    for d in watched:
-        import os
-        os.makedirs(d, exist_ok=True)
+    watched = monitor_cfg["watched_directories"]
 
-    def on_features(pid, fv):
-        print(f"[pid={pid}] {fv.as_dict()}")
+    for directory in watched:
+        os.makedirs(directory, exist_ok=True)
+
+    def on_features(pid, features):
+        print(
+            f"[pid={pid}] {features}",
+            flush=True,
+        )
 
     observer, stop_event = start_monitor(
         watched_directories=watched,
-        common_extensions=common_ext,
-        poll_interval_seconds=poll_interval,
+        common_extensions=cfg["features"]["common_extensions"],
+        poll_interval_seconds=monitor_cfg["poll_interval_seconds"],
+        window_seconds=monitor_cfg["window_seconds"],
+        min_events=monitor_cfg["min_events"],
+        enable_audit_attribution=monitor_cfg[
+            "enable_audit_attribution"
+        ],
         on_features=on_features,
     )
 
-    print(f"Watching {watched} -- Ctrl+C to stop.")
+    print(
+        f"Watching {watched} "
+        f"(window={monitor_cfg['window_seconds']}s, "
+        f"min_events={monitor_cfg['min_events']})",
+        flush=True,
+    )
 
-    def _shutdown(signum, frame):
-        stop_event.set()
-        observer.stop()
-
-    signal.signal(signal.SIGINT, _shutdown)
+    print("Feature observation only. Press Ctrl+C to stop.")
 
     try:
         while observer.is_alive():
             time.sleep(0.5)
+
+    except KeyboardInterrupt:
+        pass
+
     finally:
+        stop_event.set()
+        observer.stop()
         observer.join()
 
 

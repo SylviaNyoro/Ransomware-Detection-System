@@ -1,0 +1,68 @@
+"""Tests for provisional PID attribution caching."""
+
+from unittest.mock import Mock, patch
+
+from src.feature_engineering.features import EventType
+from src.monitor.watcher import RansomwareEventHandler
+
+
+def make_handler(audit_pid=5519, psutil_pid=-1):
+    attributor = Mock()
+    attributor.attribute.return_value = psutil_pid
+
+    aggregator = Mock()
+
+    audit = Mock()
+    audit.attribute_creation.return_value = audit_pid
+
+    handler = RansomwareEventHandler(
+        attributor=attributor,
+        aggregator=aggregator,
+        audit_reader=audit,
+    )
+
+    return handler, aggregator
+
+
+def last_pid(aggregator):
+    return aggregator.handle_event.call_args.args[0]
+
+
+def test_modification_uses_recent_verified_pid():
+    handler, aggregator = make_handler()
+
+    handler._handle("/tmp/cache_test.txt", EventType.CREATED)
+    handler._handle("/tmp/cache_test.txt", EventType.MODIFIED)
+
+    assert last_pid(aggregator) == 5519
+
+
+def test_expired_cache_returns_unknown_pid():
+    handler, aggregator = make_handler()
+
+    with patch("src.monitor.watcher.time.monotonic", return_value=100):
+        handler._handle("/tmp/cache_test.txt", EventType.CREATED)
+
+    with patch("src.monitor.watcher.time.monotonic", return_value=103):
+        handler._handle("/tmp/cache_test.txt", EventType.MODIFIED)
+
+    assert last_pid(aggregator) == -1
+
+
+def test_psutil_takes_priority_over_cached_pid():
+    handler, aggregator = make_handler(psutil_pid=7777)
+
+    handler._handle("/tmp/cache_test.txt", EventType.CREATED)
+    handler._handle("/tmp/cache_test.txt", EventType.MODIFIED)
+
+    assert last_pid(aggregator) == 7777
+
+
+def test_unknown_creation_pid_is_not_cached():
+    handler, aggregator = make_handler(audit_pid=-1)
+
+    handler._handle("/tmp/cache_test.txt", EventType.CREATED)
+    handler._handle("/tmp/cache_test.txt", EventType.MODIFIED)
+
+    assert last_pid(aggregator) == -1
+    assert handler._pid_cache == {}

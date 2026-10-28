@@ -30,6 +30,8 @@ from src.feature_engineering.features import (
     compute_features,
     normalize_path,
 )
+from src.monitor.audit_reader import AuditRenameReader
+from src.monitor.filesystem_aggregator import FilesystemAggregator
 from src.utils.logger import get_logger
 
 
@@ -239,21 +241,49 @@ class LiveAggregator:
 
 class RansomwareEventHandler(FileSystemEventHandler):
     """
-    Converts watchdog filesystem events into FileEvents and feeds
-    them into the LiveAggregator.
+    Converts watchdog events into FileEvents.
+
+    Uses auditd and psutil for PID attribution. A short-lived cache
+    provides provisional attribution for immediately following events.
     """
+
+    PID_CACHE_TTL_SECONDS = 2.0
 
     def __init__(
         self,
         attributor: ProcessAttributor,
-        aggregator: LiveAggregator,
+        aggregator,
         logger=None,
+        audit_reader=None,
     ):
         super().__init__()
-
         self._attributor = attributor
         self._aggregator = aggregator
         self._logger = logger or get_logger("watcher")
+        self._audit_reader = audit_reader
+        self._pid_cache = {}
+
+    def _cached_pid(self, path):
+        key = normalize_path(path)
+        entry = self._pid_cache.get(key)
+
+        if entry is None:
+            return UNKNOWN_PID
+
+        pid, expires_at = entry
+
+        if time.monotonic() > expires_at:
+            self._pid_cache.pop(key, None)
+            return UNKNOWN_PID
+
+        return pid
+
+    def _remember_pid(self, path, pid):
+        if pid != UNKNOWN_PID:
+            self._pid_cache[normalize_path(path)] = (
+                pid,
+                time.monotonic() + self.PID_CACHE_TTL_SECONDS,
+            )
 
     def _handle(
         self,
@@ -261,9 +291,50 @@ class RansomwareEventHandler(FileSystemEventHandler):
         event_type: EventType,
         dest_path: str | None = None,
     ):
-        pid = self._attributor.attribute(
-            dest_path or path
-        )
+        pid = UNKNOWN_PID
+        verified_by_audit = False
+        attribution_source = "unknown"
+
+        if self._audit_reader is not None:
+            if event_type == EventType.RENAMED and dest_path:
+                pid = self._audit_reader.attribute_rename(
+                    path, dest_path
+                )
+            elif event_type == EventType.CREATED:
+                pid = self._audit_reader.attribute_creation(path)
+            elif event_type == EventType.MODIFIED:
+                pid = self._audit_reader.attribute_modification(path)
+            elif event_type == EventType.DELETED:
+                pid = self._audit_reader.attribute_deletion(path)
+
+            if pid != UNKNOWN_PID:
+                verified_by_audit = True
+                attribution_source = "audit"
+
+        if pid == UNKNOWN_PID:
+            pid = self._attributor.attribute(dest_path or path)
+
+            if pid != UNKNOWN_PID:
+                attribution_source = "psutil"
+
+        if (
+            pid == UNKNOWN_PID
+            and event_type == EventType.MODIFIED
+        ):
+            pid = self._cached_pid(path)
+
+            if pid != UNKNOWN_PID:
+                attribution_source = "cached"
+
+        if verified_by_audit:
+            if event_type == EventType.RENAMED and dest_path:
+                self._pid_cache.pop(normalize_path(path), None)
+                self._remember_pid(dest_path, pid)
+            elif event_type == EventType.CREATED:
+                self._remember_pid(path, pid)
+
+        if event_type == EventType.DELETED:
+            self._pid_cache.pop(normalize_path(path), None)
 
         file_event = FileEvent(
             path=path,
@@ -272,39 +343,28 @@ class RansomwareEventHandler(FileSystemEventHandler):
             process_id=pid,
         )
 
-        self._aggregator.handle_event(
-            pid,
-            file_event,
-        )
+        self._aggregator.handle_event(pid, file_event)
 
         self._logger.info(
-            "event=%s path=%s dest=%s pid=%s",
+            "event=%s path=%s dest=%s pid=%s attribution=%s",
             event_type.value,
             path,
             dest_path,
             pid,
+            attribution_source,
         )
 
     def on_created(self, event):
         if not event.is_directory:
-            self._handle(
-                event.src_path,
-                EventType.CREATED,
-            )
+            self._handle(event.src_path, EventType.CREATED)
 
     def on_modified(self, event):
         if not event.is_directory:
-            self._handle(
-                event.src_path,
-                EventType.MODIFIED,
-            )
+            self._handle(event.src_path, EventType.MODIFIED)
 
     def on_deleted(self, event):
         if not event.is_directory:
-            self._handle(
-                event.src_path,
-                EventType.DELETED,
-            )
+            self._handle(event.src_path, EventType.DELETED)
 
     def on_moved(self, event):
         if not event.is_directory:
@@ -321,6 +381,8 @@ def start_monitor(
     poll_interval_seconds: float = 1.0,
     window_seconds: float = 10.0,
     on_features: callable = None,
+    min_events: int = 1,
+    enable_audit_attribution: bool = False,
 ) -> tuple[Observer, threading.Event]:
     """
     Start filesystem monitoring.
@@ -353,15 +415,23 @@ def start_monitor(
         refresh_interval_seconds=poll_interval_seconds,
     )
 
-    aggregator = LiveAggregator(
-        common_extensions,
+    # Use the seven-feature RanDS-compatible event aggregator.
+    aggregator = FilesystemAggregator(
         window_seconds=window_seconds,
+        min_events=min_events,
+    )
+
+    audit_reader = (
+        AuditRenameReader()
+        if enable_audit_attribution
+        else None
     )
 
     handler = RansomwareEventHandler(
         attributor,
         aggregator,
         logger=logger,
+        audit_reader=audit_reader,
     )
 
     observer = Observer()
@@ -381,7 +451,7 @@ def start_monitor(
             logger.info(
                 "pid=%s features=%s",
                 pid,
-                feature_vector.as_dict(),
+                feature_vector,
             )
 
     stop_event = threading.Event()

@@ -1,0 +1,69 @@
+{
+  "demo": "quarantine",
+  "stage": "after",
+  "timestamp_utc": "2026-10-25T13:03:40.828903+00:00",
+  "directory": "/root/ransomware-detection-system-v3/data/decoy/final_quarantine_demo",
+  "file_count": 12,
+  "files": [
+    {
+      "path": "sample_00.txt",
+      "size_bytes": 54,
+      "sha256": "9169b09c85707c8e4244c7abf7d7d56c59982b52c4332b49486ac6bfc896f21a"
+    },
+    {
+      "path": "sample_01.txt",
+      "size_bytes": 54,
+      "sha256": "f0e72b941f8eec83b848dd2912318fc50350933accc8577546e63c9ff524a525"
+    },
+    {
+      "path": "sample_02.txt",
+      "size_bytes": 54,
+      "sha256": "62e50a9ef8fba969fbadd86c87c7fd13e437c067c1afa1e9b8dfde42f696ba8c"
+    },
+    {
+      "path": "sample_03.txt",
+      "size_bytes": 54,
+      "sha256": "5a33da121f67e108606c14e3739d263eff5b30de98dabd3afb06f05ae17cd7a4"
+    },
+    {
+      "path": "sample_04.txt",
+      "size_bytes": 54,
+      "sha256": "23291e5188b2d8cf9b31cdff8df3546374af319981ffb422bb8e083206266695"
+    },
+    {
+      "path": "sample_05.txt",
+      "size_bytes": 54,
+      "sha256": "e6ca6547f2c2fc9d9a0865b86c1467e1db7444cf595e8da28830c026bfd442d9"
+    },
+    {
+      "path": "sample_06.txt",
+      "size_bytes": 54,
+      "sha256": "e4e4027f4abec5be863a865ecfd3eaed6c5274aee31dbdc8f6d283317add433d"
+    },
+    {
+      "path": "sample_07.txt",
+      "size_bytes": 54,
+      "sha256": "d8304d2c6442944091f9f04441b6d3415094e8ed1a7592d07c4675fff09d7b66"
+    },
+    {
+      "path": "sample_08.txt",
+      "size_bytes": 54,
+      "sha256": "fb22cd70d77ba05813bc906e720877504e0f4b831653f21ad419cba0aa07134f"
+    },
+    {
+      "path": "sample_09.txt",
+      "size_bytes": 54,
+      "sha256": "59112371b0ecfddd5fb7b49dcd543c8f8c6de0ed94a1afa74c4b8b4bbf90b9dc"
+    },
+    {
+      "path": "sample_10.txt",
+      "size_bytes": 55,
+      "sha256": "2e41d3b697ca097e3bb1f2b13dbe38ddc919065c9ca2f0c1a551501e4fb05b45"
+    },
+    {
+      "path": "sample_11.txt",
+      "size_bytes": 55,
+      "sha256": "6dd70dde47202c7a7f84faed38249034e290387ae72d7d5b5c9f4b1d10d5d464"
+    }
+  ]
+}
